@@ -1,0 +1,82 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Gallery — Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/css/admin.css">
+</head><body>
+<div class="admin-layout">
+  <%- include('../partials/admin-sidebar', { page: page, admin: admin }) %>
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <div><div class="topbar-title">Gallery</div><div class="topbar-breadcrumb">Manage resort photo gallery (<%= gallery.length %> images)</div></div>
+    </div>
+    <div class="admin-content">
+      <% if(success && success.length > 0) { %><div class="adm-alert adm-alert-success"><i class="fas fa-check-circle"></i> <%= success %></div><% } %>
+      <div style="display:grid;grid-template-columns:1fr 2fr;gap:24px;align-items:start">
+        <div class="data-card" style="padding:28px">
+          <h3 style="font-size:15px;margin-bottom:20px">Upload Image</h3>
+          <form method="POST" action="/admin/gallery" enctype="multipart/form-data">
+            <div class="adm-form-group" style="margin-bottom:16px"><label class="adm-label">Title</label><input class="adm-input" type="text" name="title" placeholder="Image title (optional)"></div>
+            <div class="adm-form-group" style="margin-bottom:16px">
+              <label class="adm-label">Category</label>
+              <select class="adm-input" name="category">
+                <% ['resort','rooms','dining','activities','events','nature'].forEach(c => { %><option value="<%= c %>"><%= c.charAt(0).toUpperCase() + c.slice(1) %></option><% }) %>
+              </select>
+            </div>
+            <div class="adm-form-group" style="margin-bottom:16px">
+              <label class="adm-label">Featured on Home</label>
+              <select class="adm-input" name="featured"><option value="off">No</option><option value="on">Yes</option></select>
+            </div>
+            <div class="adm-form-group" style="margin-bottom:24px">
+              <label class="adm-label">Image *</label>
+              <div class="upload-area" onclick="document.getElementById('galleryImage').click()">
+                <i class="fas fa-image"></i>
+                <div style="font-size:12px;color:var(--adm-ink2);margin-top:8px">Click to select image</div>
+              </div>
+              <input type="file" id="galleryImage" name="image" accept="image/*" required style="display:none">
+              <img id="gPreview" style="display:none;width:100%;height:140px;object-fit:cover;border-radius:8px;margin-top:12px">
+            </div>
+            <button type="submit" class="btn-adm btn-adm-primary" style="width:100%"><i class="fas fa-upload"></i> Upload Image</button>
+          </form>
+        </div>
+        <div class="data-card">
+          <div class="data-card-header"><div class="data-card-title">All Gallery Images</div></div>
+          <% if(gallery.length === 0) { %><div class="empty-state"><i class="fas fa-images" style="display:block;font-size:32px;margin-bottom:12px"></i>No images uploaded yet</div>
+          <% } else { %>
+          <div class="admin-gallery-grid">
+            <% gallery.forEach(item => { %>
+            <div class="admin-gallery-item">
+              <img src="<%= item.image ? item.image.url : '' %>" alt="<%= item.title || '' %>">
+              <div class="admin-gallery-item-overlay">
+                <button class="btn-adm btn-adm-danger btn-adm-sm delete-btn" data-url="/admin/gallery/<%= item._id %>"><i class="fas fa-trash"></i></button>
+              </div>
+              <div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.6);padding:6px 10px;font-size:10px;color:white">
+                <%= item.category %><% if(item.featured) { %> · <i class="fas fa-star" style="color:#f9a825"></i><% } %>
+              </div>
+            </div>
+            <% }) %>
+          </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+document.getElementById('galleryImage').addEventListener('change', function() {
+  const reader = new FileReader();
+  const preview = document.getElementById('gPreview');
+  reader.onload = e => { preview.src = e.target.result; preview.style.display = 'block'; };
+  reader.readAsDataURL(this.files[0]);
+});
+document.querySelectorAll('.delete-btn').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    if (!confirm('Delete this image?')) return;
+    const res = await fetch(btn.dataset.url, { method: 'DELETE' });
+    const data = await res.json();
+    if (data.success) btn.closest('.admin-gallery-item').remove();
+  });
+});
+</script>
+</body></html>

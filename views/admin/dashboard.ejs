@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Dashboard — Coconut Lagoon Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+<div class="admin-layout">
+  <%- include('../partials/admin-sidebar', { page: 'dashboard', admin: admin }) %>
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <div>
+        <div class="topbar-title">Dashboard</div>
+        <div class="topbar-breadcrumb">Welcome back, <%= admin.name %> · <%= new Date().toDateString() %></div>
+      </div>
+      <div class="topbar-actions">
+        <a href="/booking" target="_blank" class="topbar-btn topbar-btn-outline"><i class="fas fa-external-link-alt"></i> Live Site</a>
+        <a href="/admin/bookings" class="topbar-btn topbar-btn-primary"><i class="fas fa-plus"></i> View Bookings</a>
+      </div>
+    </div>
+    <div class="admin-content">
+
+      <!-- STATS GRID -->
+      <div class="stats-grid" style="grid-template-columns:repeat(4,1fr)">
+        <div class="stat-card" onclick="location.href='/admin/bookings'" style="cursor:pointer">
+          <div class="stat-icon green"><i class="fas fa-calendar-check"></i></div>
+          <div><div class="stat-num"><%= stats.totalBookings||0 %></div><div class="stat-label">Room Bookings</div></div>
+        </div>
+        <div class="stat-card" onclick="location.href='/admin/bookings?status=pending'" style="cursor:pointer">
+          <div class="stat-icon orange"><i class="fas fa-clock"></i></div>
+          <div><div class="stat-num"><%= stats.pendingBookings||0 %></div><div class="stat-label">Pending Rooms</div></div>
+        </div>
+        <div class="stat-card" onclick="location.href='/admin/event-bookings?status=pending'" style="cursor:pointer">
+          <div class="stat-icon purple"><i class="fas fa-calendar-star"></i></div>
+          <div><div class="stat-num"><%= stats.pendingEvents||0 %></div><div class="stat-label">Event Enquiries</div></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon teal"><i class="fas fa-rupee-sign"></i></div>
+          <div><div class="stat-num" style="font-size:20px">₹<%= ((stats.totalRevenue||0)/1000).toFixed(0) %>k</div><div class="stat-label">Est. Revenue</div></div>
+        </div>
+        <div class="stat-card" onclick="location.href='/admin/bookings?status=confirmed'" style="cursor:pointer">
+          <div class="stat-icon blue"><i class="fas fa-check-circle"></i></div>
+          <div><div class="stat-num"><%= stats.confirmedBookings||0 %></div><div class="stat-label">Confirmed Stays</div></div>
+        </div>
+        <div class="stat-card" onclick="location.href='/admin/rooms'" style="cursor:pointer">
+          <div class="stat-icon green"><i class="fas fa-door-open"></i></div>
+          <div><div class="stat-num"><%= stats.totalRooms||0 %></div><div class="stat-label">Active Rooms</div></div>
+        </div>
+        <div class="stat-card" onclick="location.href='/admin/contacts'" style="cursor:pointer">
+          <div class="stat-icon red"><i class="fas fa-envelope"></i></div>
+          <div><div class="stat-num"><%= stats.totalContacts||0 %></div><div class="stat-label">New Messages</div></div>
+        </div>
+        <div class="stat-card" onclick="location.href='/admin/reviews'" style="cursor:pointer">
+          <div class="stat-icon orange"><i class="fas fa-star"></i></div>
+          <div><div class="stat-num"><%= stats.pendingReviews||0 %></div><div class="stat-label">Pending Reviews</div></div>
+        </div>
+      </div>
+
+      <!-- PENDING EVENT BOOKINGS ALERT -->
+      <% if(stats.pendingEvents > 0) { %>
+      <div style="background:linear-gradient(135deg,#fff3cd,#fff8e1);border:1px solid #ffc107;border-radius:12px;padding:16px 20px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;gap:12px">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="width:40px;height:40px;background:#ffc107;border-radius:10px;display:flex;align-items:center;justify-content:center;color:white;font-size:18px"><i class="fas fa-clock"></i></div>
+          <div>
+            <div style="font-weight:500;color:#856404"><%= stats.pendingEvents %> event enquir<%= stats.pendingEvents===1?'y':'ies' %> awaiting your confirmation</div>
+            <div style="font-size:12px;color:#997a00">Event bookings require admin approval before they are confirmed to guests</div>
+          </div>
+        </div>
+        <a href="/admin/event-bookings?status=pending" class="btn-adm btn-adm-primary btn-adm-sm" style="background:#856404;flex-shrink:0">Review Now <i class="fas fa-arrow-right"></i></a>
+      </div>
+      <% } %>
+
+      <!-- QUICK ACTIONS -->
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:24px">
+        <% [
+          { href:'/admin/rooms/new',        icon:'fas fa-plus',          label:'Add Room',       color:'var(--adm-accent)' },
+          { href:'/admin/dining',            icon:'fas fa-utensils',      label:'Dining Menu',    color:'#e65100' },
+          { href:'/admin/activities',        icon:'fas fa-hiking',        label:'Activities',     color:'#1565c0' },
+          { href:'/admin/events',            icon:'fas fa-calendar-alt',  label:'Events',         color:'#6a1b9a' },
+          { href:'/admin/gallery',           icon:'fas fa-images',        label:'Gallery',        color:'#00796b' },
+        ].forEach(a => { %>
+        <a href="<%= a.href %>" style="background:white;border:1px solid var(--adm-line);border-radius:12px;padding:16px;text-align:center;text-decoration:none;transition:all 0.2s;display:block" onmouseenter="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.08)'" onmouseleave="this.style.transform='';this.style.boxShadow=''">
+          <div style="font-size:22px;margin-bottom:8px;color:<%= a.color %>"><i class="<%= a.icon %>"></i></div>
+          <div style="font-size:12px;color:var(--adm-ink2);font-weight:500"><%= a.label %></div>
+        </a>
+        <% }) %>
+      </div>
+
+      <!-- RECENT ROOM BOOKINGS + EVENT ENQUIRIES SIDE BY SIDE -->
+      <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:24px">
+        <!-- Room Bookings -->
+        <div class="data-card">
+          <div class="data-card-header">
+            <div><div class="data-card-title">Recent Room Bookings</div><div class="data-card-sub">Latest reservations</div></div>
+            <a href="/admin/bookings" class="btn-adm btn-adm-outline btn-adm-sm">View All</a>
+          </div>
+          <table class="adm-table">
+            <thead><tr><th>ID</th><th>Guest</th><th>Room</th><th>Check-in</th><th>Status</th></tr></thead>
+            <tbody>
+            <% if(!recentBookings||recentBookings.length===0) { %>
+            <tr><td colspan="5"><div class="empty-state" style="padding:32px"><i class="fas fa-calendar" style="display:block;font-size:24px;margin-bottom:8px;opacity:0.25"></i>No bookings yet</div></td></tr>
+            <% } %>
+            <% (recentBookings||[]).forEach(b => { %>
+            <tr>
+              <td><span style="font-family:monospace;font-size:10px;background:var(--adm-bg);padding:2px 6px;border-radius:4px"><%= b.bookingId %></span></td>
+              <td><div style="font-size:13px;font-weight:500"><%= b.name %></div><div style="font-size:11px;color:#999"><%= b.phone %></div></td>
+              <td style="font-size:12px"><%= b.roomType %></td>
+              <td style="font-size:12px"><%= moment(b.checkIn).format('DD MMM') %></td>
+              <td><span class="badge-status badge-<%= b.status %>"><%= b.status %></span></td>
+            </tr>
+            <% }) %>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Event Enquiries -->
+        <div class="data-card">
+          <div class="data-card-header">
+            <div><div class="data-card-title">Event Enquiries</div><div class="data-card-sub">Pending admin confirmation</div></div>
+            <a href="/admin/event-bookings" class="btn-adm btn-adm-outline btn-adm-sm">View All</a>
+          </div>
+          <table class="adm-table">
+            <thead><tr><th>Client</th><th>Event</th><th>Date</th><th>Status</th></tr></thead>
+            <tbody>
+            <% if(!recentEventBookings||recentEventBookings.length===0) { %>
+            <tr><td colspan="4"><div class="empty-state" style="padding:32px"><i class="fas fa-calendar-alt" style="display:block;font-size:24px;margin-bottom:8px;opacity:0.25"></i>No event enquiries yet</div></td></tr>
+            <% } %>
+            <% (recentEventBookings||[]).forEach(b => { %>
+            <tr>
+              <td><div style="font-size:13px;font-weight:500"><%= b.name %></div><div style="font-size:11px;color:#999"><%= b.phone %></div></td>
+              <td style="font-size:12px"><%= b.eventName %></td>
+              <td style="font-size:12px"><%= moment(b.eventDate).format('DD MMM YY') %></td>
+              <td><span class="badge-status badge-<%= b.status %>"><%= b.status %></span></td>
+            </tr>
+            <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+</body>
+</html>

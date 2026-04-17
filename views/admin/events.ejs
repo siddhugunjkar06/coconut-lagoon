@@ -1,0 +1,120 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Events Management — Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/css/admin.css">
+</head><body>
+<div class="admin-layout">
+  <%- include('../partials/admin-sidebar', { page: 'events', admin: admin }) %>
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <div><div class="topbar-title">Event Packages</div><div class="topbar-breadcrumb">Manage event offerings shown on the website</div></div>
+      <div style="display:flex;gap:10px">
+        <a href="/admin/event-bookings" class="topbar-btn topbar-btn-outline"><i class="fas fa-calendar-check"></i> Event Bookings</a>
+        <button onclick="document.getElementById('addModal').style.display='flex'" class="topbar-btn topbar-btn-primary"><i class="fas fa-plus"></i> Add Event Package</button>
+      </div>
+    </div>
+    <div class="admin-content">
+      <% if(success&&success.length>0){%><div class="adm-alert adm-alert-success"><i class="fas fa-check-circle"></i><%=success%></div><%}%>
+      <div class="data-card">
+        <table class="adm-table">
+          <thead><tr><th>Title</th><th>Category</th><th>Capacity</th><th>From Price</th><th>Featured</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody>
+          <%if(!events.length){%><tr><td colspan="7"><div class="empty-state"><i class="fas fa-calendar-alt" style="display:block;font-size:28px;margin-bottom:10px"></i>No event packages yet.</div></td></tr><%}%>
+          <%events.forEach(ev=>{%>
+          <tr>
+            <td>
+              <div style="font-weight:500"><%=ev.title%></div>
+              <div style="font-size:11px;color:#aaa;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"><%=ev.description||''%></div>
+            </td>
+            <td><span style="font-size:11px;background:var(--adm-bg);padding:3px 10px;border-radius:100px;text-transform:capitalize"><%=ev.category%></span></td>
+            <td>Up to <%=ev.capacity%></td>
+            <td style="font-weight:500;color:var(--adm-accent)">₹<%=(ev.priceFrom||0).toLocaleString('en-IN')%></td>
+            <td><%=ev.featured?'<i class="fas fa-star" style="color:#f9a825"></i>':'—'%></td>
+            <td><span class="badge-status <%=ev.available?'badge-confirmed':'badge-cancelled'%>"><%=ev.available?'Active':'Hidden'%></span></td>
+            <td style="display:flex;gap:8px">
+              <button onclick='openEdit(<%=JSON.stringify({_id:ev._id,title:ev.title,description:ev.description,category:ev.category,capacity:ev.capacity,priceFrom:ev.priceFrom,duration:ev.duration,includes:ev.includes,available:ev.available,featured:ev.featured,order:ev.order})%>)' class="btn-adm btn-adm-outline btn-adm-sm"><i class="fas fa-edit"></i></button>
+              <button class="btn-adm btn-adm-danger btn-adm-sm delete-btn" data-url="/admin/events/<%=ev._id%>"><i class="fas fa-trash"></i></button>
+            </td>
+          </tr>
+          <%})%>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ADD MODAL -->
+<div id="addModal" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.5);align-items:center;justify-content:center;padding:20px">
+  <div style="background:white;border-radius:16px;width:100%;max-width:600px;max-height:90vh;overflow-y:auto">
+    <div style="padding:24px 28px;border-bottom:1px solid var(--adm-line);display:flex;justify-content:space-between"><div style="font-size:16px;font-weight:500">Add Event Package</div><button onclick="document.getElementById('addModal').style.display='none'" style="font-size:18px;color:#aaa;cursor:pointer"><i class="fas fa-times"></i></button></div>
+    <form method="POST" action="/admin/events" enctype="multipart/form-data" style="padding:24px 28px;display:grid;gap:14px">
+      <div class="adm-form-row">
+        <div class="adm-form-group"><label class="adm-label">Package Title *</label><input class="adm-input" name="title" required placeholder="e.g. Wedding Celebration"></div>
+        <div class="adm-form-group"><label class="adm-label">Category</label><select class="adm-input" name="category"><%['wedding','birthday','corporate','festival','private','other'].forEach(c=>{%><option value="<%=c%>"><%=c.charAt(0).toUpperCase()+c.slice(1)%></option><%})%></select></div>
+      </div>
+      <div class="adm-form-group"><label class="adm-label">Description</label><textarea class="adm-input" name="description" rows="3" placeholder="Describe this event package..."></textarea></div>
+      <div class="adm-form-row">
+        <div class="adm-form-group"><label class="adm-label">Capacity</label><input class="adm-input" name="capacity" type="number" placeholder="100" value="50"></div>
+        <div class="adm-form-group"><label class="adm-label">Starting Price (₹)</label><input class="adm-input" name="priceFrom" type="number" placeholder="25000"></div>
+        <div class="adm-form-group"><label class="adm-label">Duration</label><input class="adm-input" name="duration" placeholder="1-2 days"></div>
+      </div>
+      <div class="adm-form-group"><label class="adm-label">What's Included (one per line)</label><textarea class="adm-input" name="includes" rows="4" placeholder="Decorated venue&#10;Catering&#10;Photography&#10;Accommodation"></textarea></div>
+      <div class="adm-form-group"><label class="adm-label">Images (up to 6)</label><input class="adm-input" type="file" name="images" multiple accept="image/*" style="padding:8px"></div>
+      <button type="submit" class="btn-adm btn-adm-primary" style="width:100%;padding:12px;justify-content:center"><i class="fas fa-plus"></i> Create Event Package</button>
+    </form>
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div id="editModal" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.5);align-items:center;justify-content:center;padding:20px">
+  <div style="background:white;border-radius:16px;width:100%;max-width:600px;max-height:90vh;overflow-y:auto">
+    <div style="padding:24px 28px;border-bottom:1px solid var(--adm-line);display:flex;justify-content:space-between"><div style="font-size:16px;font-weight:500">Edit Event Package</div><button onclick="document.getElementById('editModal').style.display='none'" style="font-size:18px;color:#aaa;cursor:pointer"><i class="fas fa-times"></i></button></div>
+    <form id="editForm" method="POST" enctype="multipart/form-data" style="padding:24px 28px;display:grid;gap:14px">
+      <input type="hidden" name="_method" value="PUT">
+      <div class="adm-form-row">
+        <div class="adm-form-group"><label class="adm-label">Title</label><input class="adm-input" name="title" id="eTitle" required></div>
+        <div class="adm-form-group"><label class="adm-label">Category</label><select class="adm-input" name="category" id="eCat"><%['wedding','birthday','corporate','festival','private','other'].forEach(c=>{%><option value="<%=c%>"><%=c.charAt(0).toUpperCase()+c.slice(1)%></option><%})%></select></div>
+      </div>
+      <div class="adm-form-group"><label class="adm-label">Description</label><textarea class="adm-input" name="description" id="eDesc" rows="3"></textarea></div>
+      <div class="adm-form-row">
+        <div class="adm-form-group"><label class="adm-label">Capacity</label><input class="adm-input" name="capacity" id="eCap" type="number"></div>
+        <div class="adm-form-group"><label class="adm-label">Price From (₹)</label><input class="adm-input" name="priceFrom" id="ePrice" type="number"></div>
+        <div class="adm-form-group"><label class="adm-label">Duration</label><input class="adm-input" name="duration" id="eDur"></div>
+      </div>
+      <div class="adm-form-group"><label class="adm-label">What's Included (one per line)</label><textarea class="adm-input" name="includes" id="eInc" rows="4"></textarea></div>
+      <div class="adm-form-row">
+        <div class="adm-form-group"><label class="adm-label">Status</label><select class="adm-input" name="available" id="eAvail"><option value="true">Active</option><option value="false">Hidden</option></select></div>
+        <div class="adm-form-group"><label class="adm-label">Featured</label><select class="adm-input" name="featured" id="eFeat"><option value="false">No</option><option value="true">Yes</option></select></div>
+      </div>
+      <button type="submit" class="btn-adm btn-adm-primary" style="width:100%;padding:12px;justify-content:center"><i class="fas fa-save"></i> Update Package</button>
+    </form>
+  </div>
+</div>
+
+<script>
+function openEdit(ev) {
+  document.getElementById('editForm').action='/admin/events/'+ev._id;
+  document.getElementById('eTitle').value=ev.title;
+  document.getElementById('eDesc').value=ev.description||'';
+  document.getElementById('eCat').value=ev.category;
+  document.getElementById('eCap').value=ev.capacity||50;
+  document.getElementById('ePrice').value=ev.priceFrom||0;
+  document.getElementById('eDur').value=ev.duration||'';
+  document.getElementById('eInc').value=(ev.includes||[]).join('\n');
+  document.getElementById('eAvail').value=String(ev.available!==false);
+  document.getElementById('eFeat').value=String(ev.featured===true);
+  document.getElementById('editModal').style.display='flex';
+}
+document.querySelectorAll('.delete-btn').forEach(btn=>{
+  btn.addEventListener('click',async()=>{
+    if(!confirm('Delete this event package?'))return;
+    const r=await fetch(btn.dataset.url,{method:'DELETE'});
+    const d=await r.json();
+    if(d.success)btn.closest('tr').remove();
+  });
+});
+</script>
+</body></html>

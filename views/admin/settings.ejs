@@ -1,0 +1,54 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Settings — Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/css/admin.css">
+</head><body>
+<div class="admin-layout">
+  <%- include('../partials/admin-sidebar', { page: page, admin: admin }) %>
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <div><div class="topbar-title">Settings</div><div class="topbar-breadcrumb">Account & system settings</div></div>
+    </div>
+    <div class="admin-content" style="max-width:700px">
+      <% if(success && success.length > 0) { %><div class="adm-alert adm-alert-success"><i class="fas fa-check-circle"></i> <%= success %></div><% } %>
+      <% if(error && error.length > 0) { %><div class="adm-alert adm-alert-error"><i class="fas fa-exclamation-circle"></i> <%= error %></div><% } %>
+      <div class="data-card" style="padding:32px;margin-bottom:24px">
+        <h3 style="font-size:16px;margin-bottom:24px">Admin Profile</h3>
+        <div style="display:grid;gap:12px;font-size:13px">
+          <div style="display:flex;gap:12px;padding:14px;background:var(--adm-bg);border-radius:8px">
+            <div style="width:44px;height:44px;border-radius:50%;background:var(--adm-accent);display:flex;align-items:center;justify-content:center;color:white;font-size:18px;flex-shrink:0"><i class="fas fa-user-shield"></i></div>
+            <div>
+              <div style="font-weight:500"><%= admin.name %></div>
+              <div style="color:var(--adm-ink2)"><%= admin.email %></div>
+              <div style="font-size:11px;color:#aaa;margin-top:2px">Role: <%= admin.role %></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="data-card" style="padding:32px;margin-bottom:24px">
+        <h3 style="font-size:16px;margin-bottom:24px">Change Password</h3>
+        <form method="POST" action="/admin/settings/password">
+          <div class="adm-form-group" style="margin-bottom:16px"><label class="adm-label">Current Password</label><input class="adm-input" type="password" name="currentPassword" required placeholder="Enter current password"></div>
+          <div class="adm-form-group" style="margin-bottom:16px"><label class="adm-label">New Password</label><input class="adm-input" type="password" name="newPassword" required minlength="6" placeholder="Min 6 characters"></div>
+          <div class="adm-form-group" style="margin-bottom:24px"><label class="adm-label">Confirm New Password</label><input class="adm-input" type="password" name="confirmPassword" required placeholder="Confirm new password"></div>
+          <button type="submit" class="btn-adm btn-adm-primary"><i class="fas fa-lock"></i> Update Password</button>
+        </form>
+      </div>
+      <div class="data-card" style="padding:32px">
+        <h3 style="font-size:16px;margin-bottom:20px">Resort Information</h3>
+        <div style="display:grid;gap:10px;font-size:13px;color:var(--adm-ink2)">
+          <div style="display:flex;gap:8px"><i class="fas fa-phone-alt" style="color:var(--adm-accent);width:16px"></i> +91 77759 47728</div>
+          <div style="display:flex;gap:8px"><i class="fas fa-envelope" style="color:var(--adm-accent);width:16px"></i> coconutlagoon53@gmail.com</div>
+          <div style="display:flex;gap:8px"><i class="fas fa-map-marker-alt" style="color:var(--adm-accent);width:16px"></i> Gut No 222, Pingali, Parbhani, MH 431401</div>
+          <div style="display:flex;gap:8px"><i class="fas fa-clock" style="color:var(--adm-accent);width:16px"></i> Check-in: 12:00 PM · Check-out: 11:00 AM</div>
+        </div>
+        <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--adm-line)">
+          <a href="/" target="_blank" class="btn-adm btn-adm-outline"><i class="fas fa-external-link-alt"></i> View Live Website</a>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+</body></html>

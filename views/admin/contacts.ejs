@@ -1,0 +1,53 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Messages — Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/css/admin.css">
+</head><body>
+<div class="admin-layout">
+  <%- include('../partials/admin-sidebar', { page: page, admin: admin }) %>
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <div><div class="topbar-title">Messages</div><div class="topbar-breadcrumb">Guest enquiries & contact messages</div></div>
+    </div>
+    <div class="admin-content">
+      <div class="data-card">
+        <table class="adm-table">
+          <thead><tr><th>From</th><th>Subject</th><th>Message</th><th>Date</th><th>Actions</th></tr></thead>
+          <tbody>
+          <% if(!contacts.length) { %><tr><td colspan="5"><div class="empty-state"><i class="fas fa-envelope" style="display:block;font-size:32px;margin-bottom:12px"></i>No messages yet</div></td></tr><% } %>
+          <% contacts.forEach(c => { %>
+          <tr>
+            <td>
+              <div style="font-weight:500"><%= c.name %></div>
+              <div style="font-size:11px;color:#999"><%= c.email %></div>
+              <% if(c.phone) { %><div style="font-size:11px;color:#999"><%= c.phone %></div><% } %>
+            </td>
+            <td><%= c.subject || '—' %></td>
+            <td style="max-width:320px"><div style="font-size:12px;color:var(--adm-ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis"><%= c.message %></div></td>
+            <td style="font-size:12px;color:#999"><%= moment(c.createdAt).format('DD MMM, hh:mm A') %></td>
+            <td style="display:flex;gap:8px">
+              <a href="mailto:<%= c.email %>?subject=Re: <%= c.subject || 'Your Enquiry' %>" class="btn-adm btn-adm-outline btn-adm-sm"><i class="fas fa-reply"></i></a>
+              <% if(c.phone) { %><a href="tel:<%= c.phone %>" class="btn-adm btn-adm-outline btn-adm-sm"><i class="fas fa-phone-alt"></i></a><% } %>
+              <button class="btn-adm btn-adm-danger btn-adm-sm delete-btn" data-url="/admin/contacts/<%= c._id %>"><i class="fas fa-trash"></i></button>
+            </td>
+          </tr>
+          <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+document.querySelectorAll('.delete-btn').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    if (!confirm('Delete this message?')) return;
+    const res = await fetch(btn.dataset.url, { method: 'DELETE' });
+    const d = await res.json();
+    if (d.success) btn.closest('tr').remove();
+  });
+});
+</script>
+</body></html>

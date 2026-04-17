@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Bookings — Coconut Lagoon Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+<div class="admin-layout">
+  <%- include('../partials/admin-sidebar', { page: page, admin: admin }) %>
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <div><div class="topbar-title">Bookings</div><div class="topbar-breadcrumb">Manage all resort reservations · Total: <%= total %></div></div>
+      <div class="topbar-actions">
+        <a href="/booking" target="_blank" class="topbar-btn topbar-btn-primary"><i class="fas fa-plus"></i> New Booking</a>
+      </div>
+    </div>
+    <div class="admin-content">
+      <form class="filter-bar" method="GET" action="/admin/bookings">
+        <input class="filter-input" type="text" name="search" value="<%= search %>" placeholder="Search by name, email, booking ID...">
+        <select class="filter-select" name="status" onchange="this.form.submit()">
+          <option value="all" <%= status === 'all' ? 'selected' : '' %>>All Status</option>
+          <option value="pending" <%= status === 'pending' ? 'selected' : '' %>>Pending</option>
+          <option value="confirmed" <%= status === 'confirmed' ? 'selected' : '' %>>Confirmed</option>
+          <option value="cancelled" <%= status === 'cancelled' ? 'selected' : '' %>>Cancelled</option>
+          <option value="completed" <%= status === 'completed' ? 'selected' : '' %>>Completed</option>
+        </select>
+        <button type="submit" class="btn-adm btn-adm-primary"><i class="fas fa-search"></i> Search</button>
+        <a href="/admin/bookings" class="btn-adm btn-adm-outline">Clear</a>
+      </form>
+      <div class="data-card">
+        <table class="adm-table">
+          <thead><tr><th>Booking ID</th><th>Guest</th><th>Room</th><th>Check-in</th><th>Check-out</th><th>Amount</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody>
+          <% if(bookings.length === 0) { %><tr><td colspan="8"><div class="empty-state"><i class="fas fa-calendar-times"></i><br>No bookings found</div></td></tr><% } %>
+          <% bookings.forEach(b => { %>
+          <tr>
+            <td><span style="font-family:monospace;font-size:12px;background:#f5f5f5;padding:3px 8px;border-radius:4px"><%= b.bookingId %></span></td>
+            <td><div style="font-weight:500"><%= b.name %></div><div style="font-size:11px;color:#999"><%= b.phone %></div></td>
+            <td><%= b.roomType %></td>
+            <td><%= moment(b.checkIn).format('DD MMM YYYY') %></td>
+            <td><%= moment(b.checkOut).format('DD MMM YYYY') %></td>
+            <td><%= b.totalAmount ? '₹' + b.totalAmount.toLocaleString('en-IN') : '—' %></td>
+            <td><span class="badge-status badge-<%= b.status %>"><%= b.status.charAt(0).toUpperCase() + b.status.slice(1) %></span></td>
+            <td style="display:flex;gap:8px">
+              <a href="/admin/bookings/<%= b._id %>" class="btn-adm btn-adm-outline btn-adm-sm"><i class="fas fa-eye"></i></a>
+              <button class="btn-adm btn-adm-danger btn-adm-sm delete-btn" data-url="/admin/bookings/<%= b._id %>?_method=DELETE"><i class="fas fa-trash"></i></button>
+            </td>
+          </tr>
+          <% }) %>
+          </tbody>
+        </table>
+        <% if(totalPages > 1) { %>
+        <div class="pagination">
+          <% for(let i = 1; i <= totalPages; i++) { %>
+          <a href="/admin/bookings?page=<%= i %>&status=<%= status %>&search=<%= search %>" class="page-btn <%= currentPage === i ? 'active' : '' %>"><%= i %></a>
+          <% } %>
+        </div>
+        <% } %>
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+document.querySelectorAll('.delete-btn').forEach(btn => {
+  btn.addEventListener('click', async (e) => {
+    e.preventDefault();
+    if (!confirm('Delete this booking?')) return;
+    const url = btn.dataset.url;
+    const row = btn.closest('tr');
+    const res = await fetch(url.replace('?_method=DELETE',''), { method: 'DELETE' });
+    const data = await res.json();
+    if (data.success && row) row.remove();
+  });
+});
+</script>
+</body>
+</html>

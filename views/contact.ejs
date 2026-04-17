@@ -1,0 +1,55 @@
+<%- include('partials/head', { title: 'Contact Us' }) %>
+<%- include('partials/navbar') %>
+<div class="page-hero" style="padding-top:72px">
+  <div class="page-hero-bg" style="background-image:url('https://images.trvl-media.com/lodging/120000000/119770000/119762000/119761966/0af54401.jpg')"></div>
+  <div class="page-hero-overlay"></div>
+  <div class="page-hero-content"><div class="page-hero-label">Reach Out</div><h1 class="page-hero-title">Contact <em>Us</em></h1></div>
+</div>
+<section class="section" style="background:var(--bg)">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1.4fr;gap:80px;align-items:start">
+      <div class="reveal">
+        <div class="section-label">Get In Touch</div>
+        <h2 class="section-title">We'd Love to <em>Hear</em> From You</h2>
+        <p class="section-sub" style="margin-bottom:40px">Whether you have questions, need recommendations, or want to plan your perfect stay — we're here.</p>
+        <div style="display:grid;gap:16px">
+          <div class="loc-item" style="background:var(--white)"><div class="loc-icon" style="background:var(--accent3)"><i class="fas fa-phone-alt" style="color:var(--accent)"></i></div><div><div class="loc-label">Phone</div><div class="loc-value"><a href="tel:+917775947728">+91 77759 47728</a></div></div></div>
+          <div class="loc-item" style="background:var(--white)"><div class="loc-icon" style="background:var(--accent3)"><i class="fas fa-envelope" style="color:var(--accent)"></i></div><div><div class="loc-label">Email</div><div class="loc-value"><a href="mailto:coconutlagoon53@gmail.com">coconutlagoon53@gmail.com</a></div></div></div>
+          <div class="loc-item" style="background:var(--white)"><div class="loc-icon" style="background:var(--accent3)"><i class="fas fa-map-marker-alt" style="color:var(--accent)"></i></div><div><div class="loc-label">Address</div><div class="loc-value">Gut No 222, Pingali, Parbhani, MH 431401</div></div></div>
+          <div class="loc-item" style="background:var(--white)"><div class="loc-icon" style="background:var(--accent3)"><i class="fab fa-whatsapp" style="color:var(--accent)"></i></div><div><div class="loc-label">WhatsApp</div><div class="loc-value"><a href="https://wa.me/917775947728">Chat with us</a></div></div></div>
+        </div>
+      </div>
+      <div class="booking-form reveal">
+        <% if(success) { %><div class="form-alert success"><i class="fas fa-check-circle"></i> <%= success %></div><% } %>
+        <% if(error) { %><div class="form-alert error"><i class="fas fa-exclamation-circle"></i> <%= error %></div><% } %>
+        <h3 style="font-family:'Cormorant Garamond',serif;font-size:28px;margin-bottom:24px">Send a Message</h3>
+        <form method="POST" action="/contact">
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Name *</label><input class="form-input" type="text" name="name" required placeholder="Your name"></div>
+            <div class="form-group"><label class="form-label">Email *</label><input class="form-input" type="email" name="email" required placeholder="your@email.com"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Phone</label><input class="form-input" type="tel" name="phone" placeholder="+91 00000 00000"></div>
+            <div class="form-group"><label class="form-label">Subject</label><input class="form-input" type="text" name="subject" placeholder="Booking, Events, General..."></div>
+          </div>
+          <div class="form-group" style="margin-bottom:24px"><label class="form-label">Message *</label><textarea class="form-input" name="message" rows="5" required placeholder="Tell us how we can help..."></textarea></div>
+          <button type="submit" class="form-submit"><i class="fas fa-paper-plane"></i> Send Message</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="location-section">
+  <div class="location-map"><iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7461.0!2d76.8522599!3d19.2328422!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bd0237c8dacc027%3A0xbb6d178f8d9c3a60!2sCoconut%20Lagoon%20Agro%20Resort!5e0!3m2!1sen!2sin!4v1" allowfullscreen loading="lazy"></iframe></div>
+  <div class="location-info">
+    <div class="section-label">Directions</div>
+    <h2 class="section-title">Getting <em>Here</em></h2>
+    <div class="loc-items">
+      <div class="loc-item"><div class="loc-icon"><i class="fas fa-car"></i></div><div><div class="loc-label">By Road</div><div class="loc-value">7km from Khanapur Phata on the Khanapur-Pingali Road. Well-connected from Parbhani city.</div></div></div>
+      <div class="loc-item"><div class="loc-icon"><i class="fas fa-train"></i></div><div><div class="loc-label">By Train</div><div class="loc-value">Parbhani Railway Station — 25km. We arrange resort pickup on request.</div></div></div>
+      <div class="loc-item"><div class="loc-icon"><i class="fas fa-landmark"></i></div><div><div class="loc-label">Nearby</div><div class="loc-value">Sant Janabai Temple 15 min · Aundha Nagnath Temple 45 km · Parbhani City 25 km</div></div></div>
+    </div>
+  </div>
+</div>
+<a href="https://wa.me/917775947728" target="_blank" class="whatsapp-float"><i class="fab fa-whatsapp"></i></a>
+<%- include('partials/footer') %>

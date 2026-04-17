@@ -1,0 +1,399 @@
+<%- include('partials/head', { title: 'Welcome' }) %>
+<%- include('partials/navbar') %>
+
+<!-- ═══ FULL-BLEED CINEMATIC HERO ═══ -->
+<section class="hero">
+  <!-- Full background image -->
+  <div class="hero-bg-full"></div>
+  <!-- Cinematic gradient overlay -->
+  <div class="hero-cinematic-overlay"></div>
+
+  <!-- Floating badge top-left -->
+  <div class="hero-agro-badge">
+    <i class="fas fa-leaf"></i> Agro Resort · Parbhani
+  </div>
+
+  <!-- Floating review card top-right -->
+  <div class="hero-review-card">
+    <div class="review-card-img"></div>
+    <div class="review-card-stars">★★★★★</div>
+    <div class="review-card-text">"Exceptional stay — beautiful nature, amazing pool & delicious farm food!"</div>
+    <div class="review-card-name">Verified Guest</div>
+    <div class="review-card-source">Expedia · 10/10 Score</div>
+  </div>
+
+  <!-- Main content — bottom left like reference -->
+  <div class="hero-content-overlay">
+    <div class="hero-text-block">
+      <div class="hero-eyebrow-new">Parbhani, Maharashtra · Est. 2018</div>
+      <h1 class="hero-h1-new">
+        Where Nature
+        <em>Meets Luxury</em>
+      </h1>
+      <p class="hero-desc-new">
+        Coconut Lagoon Agro Resort — nestled in the heart of Maharashtra, offering a serene escape with lush greenery, swimming pool, farm-to-table dining and genuine hospitality.
+      </p>
+      <div class="hero-cta-new">
+        <a href="/booking" class="hero-btn-primary">Book Your Stay <i class="fas fa-arrow-right"></i></a>
+        <a href="/rooms" class="hero-btn-ghost"><i class="fas fa-door-open"></i> Explore Rooms</a>
+      </div>
+    </div>
+
+    <!-- Stats glass card — right side -->
+    <div class="hero-stats-card">
+      <div class="hero-stat-item">
+        <div class="hero-stat-n"><span data-target="221" data-suffix="+">221+</span></div>
+        <div class="hero-stat-lbl">Verified Reviews</div>
+      </div>
+      <div class="hero-stat-div"></div>
+      <div class="hero-stat-item">
+        <div class="hero-stat-n">4.1<span>★</span></div>
+        <div class="hero-stat-lbl">Avg. Rating</div>
+      </div>
+      <div class="hero-stat-div"></div>
+      <div class="hero-stat-item">
+        <div class="hero-stat-n"><span data-target="15" data-suffix="+">15+</span></div>
+        <div class="hero-stat-lbl">Amenities</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll hint -->
+  <div class="hero-scroll-hint">
+    <div class="scroll-dot"></div>
+    <span class="scroll-label">Scroll</span>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-bar">
+  <div class="marquee-inner">
+    <% const items = ['Swimming Pool','Rain Dance','Free Breakfast','Free Parking','Pet Friendly','Room Service','Farm Dining','Event Venue','WiFi 100+ Mbps','Air Conditioned','Nature Walks','Bonfire Nights']; %>
+    <% for(let i = 0; i < 3; i++) { items.forEach(item => { %>
+      <span class="marquee-item"><%= item %></span><span class="marquee-item marquee-sep">·</span>
+    <% }); } %>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section class="section about-section">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-images reveal">
+        <div class="about-img-main"></div>
+        <div class="about-img-secondary"></div>
+        <div class="about-award">
+          <div class="award-num">4.1</div>
+          <div class="award-label">JustDial Score</div>
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="section-label">Our Story</div>
+        <h2 class="section-title">A Retreat Into <em>Pure Nature</em></h2>
+        <p class="section-sub">Located at Gut No 222, Pingali, Parbhani, Coconut Lagoon Agro Resort is more than a stay — it's an immersion into nature. With 221+ verified reviews, we're Parbhani's premier agro resort destination.</p>
+        <div class="about-features">
+          <div class="about-feature">
+            <div class="af-icon"><i class="fas fa-swimming-pool"></i></div>
+            <div><div class="af-title">Swimming Pool</div><div class="af-desc">Large pool with rain dance facility for families</div></div>
+          </div>
+          <div class="about-feature">
+            <div class="af-icon"><i class="fas fa-utensils"></i></div>
+            <div><div class="af-title">Farm Dining</div><div class="af-desc">Fresh farm-to-table meals and authentic cuisine</div></div>
+          </div>
+          <div class="about-feature">
+            <div class="af-icon"><i class="fas fa-leaf"></i></div>
+            <div><div class="af-title">Agro Experience</div><div class="af-desc">Experience rural farming life up close</div></div>
+          </div>
+          <div class="about-feature">
+            <div class="af-icon"><i class="fas fa-paw"></i></div>
+            <div><div class="af-title">Pet Friendly</div><div class="af-desc">Welcome your furry friends to the resort</div></div>
+          </div>
+        </div>
+        <div style="margin-top:36px">
+          <a href="/about" class="btn-primary">Discover More <i class="fas fa-arrow-right"></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AMENITIES -->
+<section class="section amenities-section">
+  <div class="container">
+    <div class="reveal" style="display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:end;margin-bottom:20px">
+      <div>
+        <div class="section-label">Facilities</div>
+        <h2 class="section-title">World-Class <em>Amenities</em></h2>
+      </div>
+      <p class="section-sub">Every facility at Coconut Lagoon is designed to elevate your stay from ordinary to extraordinary.</p>
+    </div>
+    <div class="amenities-grid">
+      <% const amenities = [
+        { icon: 'fas fa-swimming-pool', name: 'Swimming Pool', desc: 'Olympic-style pool with rain dance and water sports, open all day for guests.', num: '01' },
+        { icon: 'fas fa-wifi', name: 'High-Speed WiFi', desc: '100+ Mbps blazing-fast internet across the entire resort campus.', num: '02' },
+        { icon: 'fas fa-utensils', name: 'Multi-Cuisine Restaurant', desc: "D'Oasis restaurant serving authentic Indian and continental cuisines.", num: '03' },
+        { icon: 'fas fa-parking', name: 'Free Parking', desc: 'Spacious complimentary parking with 24/7 security surveillance.', num: '04' },
+        { icon: 'fas fa-coffee', name: 'Free Breakfast', desc: 'Fresh complimentary breakfast buffet served daily from farm produce.', num: '05' },
+        { icon: 'fas fa-campground', name: 'Bonfire & Events', desc: 'Outdoor spaces for bonfires, group gatherings and special events.', num: '06' },
+      ]; %>
+      <% amenities.forEach(a => { %>
+      <div class="amenity-card reveal">
+        <div class="amenity-num"><%= a.num %></div>
+        <div class="amenity-icon"><i class="<%= a.icon %>"></i></div>
+        <div class="amenity-name"><%= a.name %></div>
+        <div class="amenity-desc"><%= a.desc %></div>
+      </div>
+      <% }) %>
+    </div>
+    <div style="text-align:center;margin-top:48px">
+      <a href="/activities" class="btn-outline">View All Activities <i class="fas fa-arrow-right"></i></a>
+    </div>
+  </div>
+</section>
+
+<!-- ROOMS -->
+<section class="section rooms-section">
+  <div class="container">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:0">
+      <div class="reveal">
+        <div class="section-label">Accommodation</div>
+        <h2 class="section-title">Our <em>Rooms</em> & Suites</h2>
+        <p class="section-sub" style="color:rgba(255,255,255,0.55)">Each room is a sanctuary designed to blend natural aesthetics with modern luxury.</p>
+      </div>
+      <a href="/rooms" class="btn-outline reveal" style="color:rgba(255,255,255,0.7);border-color:rgba(255,255,255,0.2)">All Rooms <i class="fas fa-arrow-right"></i></a>
+    </div>
+    <div class="rooms-grid">
+      <% if(rooms && rooms.length > 0) { rooms.forEach((room, i) => { %>
+      <div class="room-card reveal">
+        <div class="room-img">
+          <div class="room-img-bg" style="background-image:url('<%= room.images && room.images[0] ? room.images[0].url : "https://images.trvl-media.com/lodging/120000000/119770000/119762000/119761966/0af54401.jpg" %>')"></div>
+          <div class="room-img-overlay"></div>
+          <div class="room-price-tag">₹<%= room.price.toLocaleString('en-IN') %>/night</div>
+        </div>
+        <div class="room-body">
+          <div class="room-type"><%= room.type %></div>
+          <div class="room-name"><%= room.name %></div>
+          <div class="room-desc"><%= room.description ? room.description.substring(0,100) + '...' : '' %></div>
+          <div class="room-amenities">
+            <% (room.amenities || []).slice(0,4).forEach(a => { %>
+            <span class="room-amenity"><i class="fas fa-check"></i> <%= a %></span>
+            <% }) %>
+          </div>
+          <div class="room-footer">
+            <div class="room-price-main">₹<%= room.price.toLocaleString('en-IN') %> <span>/ night</span></div>
+            <a href="/booking?roomId=<%= room._id %>" class="room-book-btn">Book <i class="fas fa-arrow-right"></i></a>
+          </div>
+        </div>
+      </div>
+      <% }); } else { %>
+      <% [
+        { name: 'Garden View Villa', type: 'Villa', price: 2369, img: 'https://images.trvl-media.com/lodging/120000000/119770000/119762000/119761966/0af54401.jpg' },
+        { name: 'Family Suite', type: 'Suite', price: 3500, img: 'https://images.trvl-media.com/lodging/120000000/119770000/119762000/119761966/e7aae43a.jpg' },
+        { name: 'Nature Retreat Room', type: 'Premium Room', price: 2800, img: 'https://images.trvl-media.com/lodging/120000000/119770000/119762000/119761966/d59ceade.jpg' }
+      ].forEach(r => { %>
+      <div class="room-card reveal">
+        <div class="room-img">
+          <div class="room-img-bg" style="background-image:url('<%= r.img %>')"></div>
+          <div class="room-img-overlay"></div>
+          <div class="room-price-tag">₹<%= r.price.toLocaleString('en-IN') %>/night</div>
+        </div>
+        <div class="room-body">
+          <div class="room-type"><%= r.type %></div>
+          <div class="room-name"><%= r.name %></div>
+          <div class="room-desc">Experience the finest in comfort with nature views, smart TV, high-speed WiFi, and personalised service.</div>
+          <div class="room-amenities">
+            <span class="room-amenity"><i class="fas fa-check"></i> AC</span>
+            <span class="room-amenity"><i class="fas fa-check"></i> Free WiFi</span>
+            <span class="room-amenity"><i class="fas fa-check"></i> Breakfast</span>
+            <span class="room-amenity"><i class="fas fa-check"></i> Smart TV</span>
+          </div>
+          <div class="room-footer">
+            <div class="room-price-main">₹<%= r.price.toLocaleString('en-IN') %> <span>/ night</span></div>
+            <a href="/booking" class="room-book-btn">Book <i class="fas fa-arrow-right"></i></a>
+          </div>
+        </div>
+      </div>
+      <% }); } %>
+    </div>
+  </div>
+</section>
+
+<!-- DINING TEASER -->
+<section class="section dining-section" style="background:var(--white)">
+  <div class="container">
+    <div class="dining-hero">
+      <div class="dining-img reveal"></div>
+      <div class="reveal">
+        <div class="section-label">Culinary Experience</div>
+        <h2 class="section-title">D'Oasis <em>Restaurant</em></h2>
+        <p class="section-sub">From farm-fresh breakfast to candlelit dinners, our restaurant celebrates Maharashtra's rich culinary heritage with a modern touch.</p>
+        <div class="dining-menu">
+          <% [
+            { icon: '🌄', name: 'Farm Breakfast', desc: 'Fresh farm-to-table breakfast included with every room' },
+            { icon: '🍛', name: 'Regional Cuisine', desc: 'Authentic Marathwada dishes crafted by local chefs' },
+            { icon: '🌙', name: 'Fine Dining Evenings', desc: 'Candlelit dinners with live music on weekends' },
+            { icon: '🥗', name: 'Garden Café', desc: 'Light bites and refreshments by the poolside' }
+          ].forEach(m => { %>
+          <div class="menu-item">
+            <div class="menu-icon"><%= m.icon %></div>
+            <div><div class="menu-name"><%= m.name %></div><div class="menu-desc"><%= m.desc %></div></div>
+          </div>
+          <% }) %>
+        </div>
+        <div style="margin-top:32px">
+          <a href="/dining" class="btn-primary">Explore Menu <i class="fas fa-arrow-right"></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY TEASER -->
+<section class="section gallery-section">
+  <div class="container">
+    <div class="reveal" style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:48px">
+      <div>
+        <div class="section-label">Visual Tour</div>
+        <h2 class="section-title">Life at <em>Coconut Lagoon</em></h2>
+      </div>
+      <a href="/gallery" class="btn-outline">Full Gallery <i class="fas fa-arrow-right"></i></a>
+    </div>
+    <div class="gallery-grid">
+      <% const galImages = [
+        { url: 'https://images.trvl-media.com/lodging/120000000/119770000/119762000/119761966/0af54401.jpg', cat: 'resort' },
+        { url: 'https://images.trvl-media.com/lodging/120000000/119770000/119762000/119761966/e7aae43a.jpg', cat: 'rooms' },
+        { url: 'https://images.trvl-media.com/lodging/120000000/119770000/119762000/119761966/d59ceade.jpg', cat: 'dining' },
+        { url: 'https://images.trvl-media.com/lodging/120000000/119770000/119762000/119761966/0af54401.jpg', cat: 'resort' },
+        { url: 'https://images.trvl-media.com/lodging/120000000/119770000/119762000/119761966/e7aae43a.jpg', cat: 'activities' },
+        { url: 'https://images.trvl-media.com/lodging/120000000/119770000/119762000/119761966/d59ceade.jpg', cat: 'rooms' },
+        { url: 'https://images.trvl-media.com/lodging/120000000/119770000/119762000/119761966/0af54401.jpg', cat: 'resort' },
+        { url: 'https://images.trvl-media.com/lodging/120000000/119770000/119762000/119761966/e7aae43a.jpg', cat: 'dining' }
+      ];
+      const displayGallery = (gallery && gallery.length > 0) ? gallery : galImages;
+      displayGallery.slice(0, 8).forEach((item, i) => { %>
+      <div class="gallery-item reveal" data-category="<%= item.cat || item.category || 'resort' %>">
+        <div class="gallery-item-img" style="background-image:url('<%= item.url || (item.image && item.image.url) %>')"></div>
+        <div class="gallery-item-overlay"><i class="fas fa-expand gallery-overlay-icon"></i></div>
+      </div>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section class="section reviews-section">
+  <div class="container">
+    <div class="reveal" style="text-align:center;margin-bottom:0">
+      <div class="section-label" style="justify-content:center">Testimonials</div>
+      <h2 class="section-title">What Our <em>Guests</em> Say</h2>
+      <p class="section-sub" style="margin:16px auto 0;text-align:center">Real experiences from guests who've discovered the magic of Coconut Lagoon.</p>
+    </div>
+    <div class="reviews-grid">
+      <% const defaultReviews = [
+        { rating: 5, review: 'From the moment I walked in, I experienced the finest in modern resort hospitality. The environment is calm, welcoming, and truly designed to make every visit stress-free.', name: 'Verified Guest', source: 'Justdial · 4.1 Rating' },
+        { rating: 5, review: 'Beautiful ambience and surroundings. The swimming pool and rain dance facilities were a highlight for the whole family. Food was absolutely delicious!', name: 'Family Guest', source: 'Justdial · 221+ Reviews' },
+        { rating: 5, review: 'Exceptional value — free breakfast, free parking, great pool and pet-friendly. Exactly what our family needed for a weekend escape from the city.', name: 'Expedia Traveller', source: 'Expedia · 10/10 Exceptional' },
+      ];
+      const displayReviews = (reviews && reviews.length > 0) ? reviews : defaultReviews;
+      displayReviews.slice(0,3).forEach(r => { %>
+      <div class="review-card reveal">
+        <div class="review-stars"><%= '★'.repeat(r.rating || 5) %><%= '☆'.repeat(5 - (r.rating || 5)) %></div>
+        <div class="review-text">"<%= r.review %>"</div>
+        <div class="review-author"><%= r.name %></div>
+        <div class="review-source"><%= r.source || 'Verified Guest' %></div>
+      </div>
+      <% }) %>
+    </div>
+  </div>
+</section>
+
+<!-- BOOKING FORM -->
+<section class="section booking-section" id="booking">
+  <div class="container">
+    <div class="booking-inner">
+      <div class="booking-title reveal">Reserve Your <em style="font-style:italic;color:var(--gold2)">Stay</em></div>
+      <p class="booking-sub reveal">Fill in your details — we'll confirm within 2 hours</p>
+      <div class="booking-form reveal">
+        <% if(typeof success !== 'undefined' && success) { %>
+        <div class="form-alert success"><i class="fas fa-check-circle"></i> Booking submitted!</div>
+        <% } %>
+        <form method="POST" action="/booking" id="bookingForm">
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Full Name *</label><input class="form-input" type="text" name="name" placeholder="Your full name" required></div>
+            <div class="form-group"><label class="form-label">Phone Number *</label><input class="form-input" type="tel" name="phone" placeholder="+91 00000 00000" required></div>
+            <div class="form-group"><label class="form-label">Email Address *</label><input class="form-input" type="email" name="email" placeholder="your@email.com" required></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label class="form-label">Check-in *</label><input class="form-input" type="date" name="checkIn" id="checkIn" required></div>
+            <div class="form-group"><label class="form-label">Check-out *</label><input class="form-input" type="date" name="checkOut" id="checkOut" required></div>
+            <div class="form-group"><label class="form-label">Guests</label><select class="form-input" name="guests"><option value="1">1 Guest</option><option value="2" selected>2 Guests</option><option value="3">3 Guests</option><option value="4">4 Guests</option><option value="5">5+ Guests</option></select></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group span-2">
+              <label class="form-label">Room Type *</label>
+              <select class="form-input" name="roomType" id="roomSelect" required>
+                <option value="">Select a room</option>
+                <% if(rooms && rooms.length > 0) { rooms.forEach(r => { %><option value="<%= r._id %>" data-price="<%= r.price %>"><%= r.name %> — ₹<%= r.price.toLocaleString('en-IN') %>/night</option><% }); } else { %>
+                <option value="garden" data-price="2369">Garden View Villa — ₹2,369/night</option>
+                <option value="family" data-price="3500">Family Suite — ₹3,500/night</option>
+                <option value="nature" data-price="2800">Nature Retreat Room — ₹2,800/night</option>
+                <% } %>
+              </select>
+            </div>
+            <div class="form-group"><label class="form-label">Est. Total</label><input class="form-input" id="priceLine" readonly placeholder="—" style="background:var(--card);font-weight:500;color:var(--accent)"></div>
+          </div>
+          <div class="form-row" style="grid-template-columns:1fr">
+            <div class="form-group"><label class="form-label">Special Requests</label><textarea class="form-input" name="specialRequests" rows="3" placeholder="Dietary needs, celebration setup, early check-in..."></textarea></div>
+          </div>
+          <button type="submit" class="form-submit"><i class="fas fa-calendar-check"></i> Confirm Reservation</button>
+        </form>
+        <div style="text-align:center;margin-top:20px;font-size:12px;color:var(--ink3)">
+          <i class="fas fa-lock"></i> Secure booking · No advance payment required · <a href="/booking/status" style="color:var(--accent)">Check booking status</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LOCATION -->
+<div class="location-section">
+  <div class="location-map">
+    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7461.0!2d76.8522599!3d19.2328422!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bd0237c8dacc027%3A0xbb6d178f8d9c3a60!2sCoconut%20Lagoon%20Agro%20Resort!5e0!3m2!1sen!2sin!4v1" allowfullscreen loading="lazy" title="Coconut Lagoon Location"></iframe>
+  </div>
+  <div class="location-info">
+    <div class="section-label">Find Us</div>
+    <h2 class="section-title">Getting <em>Here</em></h2>
+    <div class="loc-items">
+      <div class="loc-item"><div class="loc-icon"><i class="fas fa-map-marker-alt"></i></div><div><div class="loc-label">Address</div><div class="loc-value">Gut No 222, Khanapur Pingli Road, 7km from Khanapur Phata, Pingali, Parbhani, Maharashtra 431401</div></div></div>
+      <div class="loc-item"><div class="loc-icon"><i class="fas fa-phone-alt"></i></div><div><div class="loc-label">Phone</div><div class="loc-value">+91 77759 47728</div></div></div>
+      <div class="loc-item"><div class="loc-icon"><i class="fas fa-envelope"></i></div><div><div class="loc-label">Email</div><div class="loc-value">coconutlagoon53@gmail.com</div></div></div>
+      <div class="loc-item"><div class="loc-icon"><i class="fas fa-clock"></i></div><div><div class="loc-label">Check-in / Check-out</div><div class="loc-value">Check-in: 12:00 PM · Check-out: 11:00 AM</div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-eyebrow">Ready for your escape?</div>
+  <h2 class="cta-title reveal">Discover <em>The Resort</em><br>Experience</h2>
+  <p class="cta-desc reveal">Book directly for the best rates, complimentary breakfast, and personalised service. Your nature escape awaits.</p>
+  <div class="cta-contacts reveal">
+    <a href="tel:+917775947728" class="cta-contact"><i class="fas fa-phone-alt"></i> +91 77759 47728</a>
+    <a href="mailto:coconutlagoon53@gmail.com" class="cta-contact"><i class="fas fa-envelope"></i> Email Us</a>
+    <a href="https://wa.me/917775947728" target="_blank" class="cta-contact"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+  </div>
+  <a href="/booking" class="btn-primary reveal" style="font-size:12px;padding:18px 48px">Book a Stay Now <i class="fas fa-arrow-right"></i></a>
+</section>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <div class="lightbox-close" onclick="document.getElementById('lightbox').classList.remove('active')"><i class="fas fa-times"></i></div>
+  <img class="lightbox-img" id="lightboxImg" src="" alt="Gallery">
+</div>
+
+<!-- WHATSAPP FLOAT -->
+<a href="https://wa.me/917775947728" target="_blank" class="whatsapp-float" title="Chat on WhatsApp">
+  <i class="fab fa-whatsapp"></i>
+</a>
+
+<%- include('partials/footer') %>

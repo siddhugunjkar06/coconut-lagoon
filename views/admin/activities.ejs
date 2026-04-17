@@ -1,0 +1,130 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Activities — Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/css/admin.css">
+</head><body>
+<div class="admin-layout">
+  <%- include('../partials/admin-sidebar', { page: 'activities', admin: admin }) %>
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <div><div class="topbar-title">Activities</div><div class="topbar-breadcrumb">Manage resort activities & experiences (<%= activities.length %>)</div></div>
+      <button onclick="document.getElementById('addModal').style.display='flex'" class="topbar-btn topbar-btn-primary"><i class="fas fa-plus"></i> Add Activity</button>
+    </div>
+    <div class="admin-content">
+      <% if(success&&success.length>0){%><div class="adm-alert adm-alert-success"><i class="fas fa-check-circle"></i><%=success%></div><%}%>
+      <div class="data-card">
+        <table class="adm-table">
+          <thead><tr><th>Icon</th><th>Name</th><th>Category</th><th>Duration</th><th>Price</th><th>Featured</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody>
+          <%if(!activities.length){%><tr><td colspan="8"><div class="empty-state"><i class="fas fa-hiking" style="display:block;font-size:28px;margin-bottom:10px"></i>No activities. Add the first one!</div></td></tr><%}%>
+          <%activities.forEach(a=>{%>
+          <tr>
+            <td><div style="width:40px;height:40px;border-radius:10px;background:var(--adm-bg);display:flex;align-items:center;justify-content:center;color:var(--adm-accent)"><i class="<%=a.icon||'fas fa-star'%>"></i></div></td>
+            <td><div style="font-weight:500"><%=a.name%></div><div style="font-size:11px;color:#aaa;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"><%=a.description||''%></div></td>
+            <td><span style="font-size:11px;background:var(--adm-bg);padding:3px 10px;border-radius:100px;text-transform:capitalize"><%=a.category%></span></td>
+            <td style="font-size:12px"><%=a.duration||'—'%></td>
+            <td style="font-weight:500;color:var(--adm-accent)"><%=a.price>0?'₹'+a.price:'Free'%></td>
+            <td><%=a.featured?'<i class="fas fa-star" style="color:#f9a825"></i>':'<i class="far fa-star" style="color:#ccc"></i>'%></td>
+            <td><span class="badge-status <%=a.available?'badge-confirmed':'badge-cancelled'%>"><%=a.available?'Active':'Hidden'%></span></td>
+            <td style="display:flex;gap:8px">
+              <button onclick='openEdit(<%=JSON.stringify({_id:a._id,name:a.name,description:a.description,category:a.category,duration:a.duration,price:a.price,included:a.included,maxPersons:a.maxPersons,available:a.available,featured:a.featured,icon:a.icon,order:a.order})%>)' class="btn-adm btn-adm-outline btn-adm-sm"><i class="fas fa-edit"></i></button>
+              <button class="btn-adm btn-adm-danger btn-adm-sm delete-btn" data-url="/admin/activities/<%=a._id%>"><i class="fas fa-trash"></i></button>
+            </td>
+          </tr>
+          <%})%>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ADD MODAL -->
+<div id="addModal" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.5);align-items:center;justify-content:center;padding:20px">
+  <div style="background:white;border-radius:16px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto">
+    <div style="padding:24px 28px;border-bottom:1px solid var(--adm-line);display:flex;justify-content:space-between"><div style="font-size:16px;font-weight:500">Add Activity</div><button onclick="document.getElementById('addModal').style.display='none'" style="font-size:18px;color:#aaa;cursor:pointer"><i class="fas fa-times"></i></button></div>
+    <form method="POST" action="/admin/activities" enctype="multipart/form-data" style="padding:24px 28px;display:grid;gap:14px">
+      <div class="adm-form-row">
+        <div class="adm-form-group adm-form-group-span-2"><label class="adm-label">Activity Name *</label><input class="adm-input" name="name" required placeholder="e.g. Bonfire Nights"></div>
+        <div class="adm-form-group">
+          <label class="adm-label">Category</label>
+          <select class="adm-input" name="category">
+            <% ['water','land','cultural','adventure','wellness','kids'].forEach(c=>{%><option value="<%=c%>"><%=c.charAt(0).toUpperCase()+c.slice(1)%></option><%})%>
+          </select>
+        </div>
+      </div>
+      <div class="adm-form-group"><label class="adm-label">Description</label><textarea class="adm-input" name="description" rows="2" placeholder="What guests can expect..."></textarea></div>
+      <div class="adm-form-row">
+        <div class="adm-form-group"><label class="adm-label">Duration</label><input class="adm-input" name="duration" placeholder="e.g. 2 hours, All day"></div>
+        <div class="adm-form-group"><label class="adm-label">Price (₹) — 0 = included</label><input class="adm-input" name="price" type="number" min="0" placeholder="0"></div>
+      </div>
+      <div class="adm-form-row">
+        <div class="adm-form-group"><label class="adm-label">FA Icon Class</label><input class="adm-input" name="icon" placeholder="fas fa-swimming-pool" value="fas fa-star"></div>
+        <div class="adm-form-group"><label class="adm-label">Max Persons</label><input class="adm-input" name="maxPersons" type="number" placeholder="Leave empty for unlimited"></div>
+      </div>
+      <div class="adm-form-row">
+        <div class="adm-form-group"><label class="adm-label">Included in Stay</label><select class="adm-input" name="included"><option value="true">Yes (Included)</option><option value="false">No (Chargeable)</option></select></div>
+        <div class="adm-form-group"><label class="adm-label">Order No.</label><input class="adm-input" name="order" type="number" placeholder="1"></div>
+      </div>
+      <div class="adm-form-group"><label class="adm-label">Image (optional)</label><input class="adm-input" type="file" name="image" accept="image/*" style="padding:8px"></div>
+      <button type="submit" class="btn-adm btn-adm-primary" style="width:100%;padding:12px;justify-content:center"><i class="fas fa-plus"></i> Add Activity</button>
+    </form>
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div id="editModal" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.5);align-items:center;justify-content:center;padding:20px">
+  <div style="background:white;border-radius:16px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto">
+    <div style="padding:24px 28px;border-bottom:1px solid var(--adm-line);display:flex;justify-content:space-between"><div style="font-size:16px;font-weight:500">Edit Activity</div><button onclick="document.getElementById('editModal').style.display='none'" style="font-size:18px;color:#aaa;cursor:pointer"><i class="fas fa-times"></i></button></div>
+    <form id="editForm" method="POST" enctype="multipart/form-data" style="padding:24px 28px;display:grid;gap:14px">
+      <input type="hidden" name="_method" value="PUT">
+      <div class="adm-form-row">
+        <div class="adm-form-group adm-form-group-span-2"><label class="adm-label">Activity Name</label><input class="adm-input" name="name" id="eName" required></div>
+        <div class="adm-form-group"><label class="adm-label">Category</label><select class="adm-input" name="category" id="eCat"><% ['water','land','cultural','adventure','wellness','kids'].forEach(c=>{%><option value="<%=c%>"><%=c.charAt(0).toUpperCase()+c.slice(1)%></option><%})%></select></div>
+      </div>
+      <div class="adm-form-group"><label class="adm-label">Description</label><textarea class="adm-input" name="description" id="eDesc" rows="2"></textarea></div>
+      <div class="adm-form-row">
+        <div class="adm-form-group"><label class="adm-label">Duration</label><input class="adm-input" name="duration" id="eDur"></div>
+        <div class="adm-form-group"><label class="adm-label">Price (₹)</label><input class="adm-input" name="price" id="ePrice" type="number" min="0"></div>
+      </div>
+      <div class="adm-form-row">
+        <div class="adm-form-group"><label class="adm-label">FA Icon</label><input class="adm-input" name="icon" id="eIcon"></div>
+        <div class="adm-form-group"><label class="adm-label">Order</label><input class="adm-input" name="order" id="eOrder" type="number"></div>
+      </div>
+      <div class="adm-form-row">
+        <div class="adm-form-group"><label class="adm-label">Status</label><select class="adm-input" name="available" id="eAvail"><option value="true">Active</option><option value="false">Hidden</option></select></div>
+        <div class="adm-form-group"><label class="adm-label">Featured</label><select class="adm-input" name="featured" id="eFeat"><option value="false">No</option><option value="true">Yes</option></select></div>
+      </div>
+      <div class="adm-form-group"><label class="adm-label">Included in Stay</label><select class="adm-input" name="included" id="eInc"><option value="true">Yes</option><option value="false">No</option></select></div>
+      <button type="submit" class="btn-adm btn-adm-primary" style="width:100%;padding:12px;justify-content:center"><i class="fas fa-save"></i> Update Activity</button>
+    </form>
+  </div>
+</div>
+
+<script>
+function openEdit(a) {
+  document.getElementById('editForm').action = '/admin/activities/'+a._id;
+  document.getElementById('eName').value  = a.name;
+  document.getElementById('eDesc').value  = a.description||'';
+  document.getElementById('eCat').value   = a.category;
+  document.getElementById('eDur').value   = a.duration||'';
+  document.getElementById('ePrice').value = a.price||0;
+  document.getElementById('eIcon').value  = a.icon||'fas fa-star';
+  document.getElementById('eOrder').value = a.order||0;
+  document.getElementById('eAvail').value = String(a.available!==false);
+  document.getElementById('eFeat').value  = String(a.featured===true);
+  document.getElementById('eInc').value   = String(a.included!==false);
+  document.getElementById('editModal').style.display = 'flex';
+}
+document.querySelectorAll('.delete-btn').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    if (!confirm('Delete this activity?')) return;
+    const res = await fetch(btn.dataset.url, { method: 'DELETE' });
+    const d = await res.json();
+    if (d.success) btn.closest('tr').remove();
+  });
+});
+</script>
+</body></html>

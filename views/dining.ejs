@@ -1,0 +1,108 @@
+<%- include('partials/head', { title: "Dining — D'Oasis Restaurant" }) %>
+<%- include('partials/navbar') %>
+
+<div class="page-hero" style="padding-top:72px">
+  <div class="page-hero-bg" style="background-image:url('https://images.trvl-media.com/lodging/120000000/119770000/119762000/119761966/d59ceade.jpg')"></div>
+  <div class="page-hero-overlay"></div>
+  <div class="page-hero-content">
+    <div class="page-hero-label">Culinary Experience</div>
+    <h1 class="page-hero-title">D'Oasis <em>Restaurant</em></h1>
+  </div>
+</div>
+
+<section class="section" style="background:var(--white)">
+  <div class="container">
+    <div style="display:grid;grid-template-columns:1fr 1.5fr;gap:80px;align-items:center;margin-bottom:80px">
+      <div class="reveal">
+        <div class="section-label">About The Restaurant</div>
+        <h2 class="section-title">Farm-to-Table <em>Dining</em></h2>
+        <p class="section-sub">D'Oasis celebrates Maharashtra's rich culinary heritage. Every dish is crafted using fresh produce from our own farm and locally sourced ingredients. From hearty Marathwada thalis to continental favourites, our kitchen serves with love.</p>
+        <div style="margin-top:28px;display:flex;gap:24px;flex-wrap:wrap">
+          <div style="text-align:center">
+            <div style="font-family:'Cormorant Garamond',serif;font-size:32px;color:var(--accent)">7</div>
+            <div style="font-size:10px;color:var(--ink3);letter-spacing:0.1em;text-transform:uppercase">Menu Categories</div>
+          </div>
+          <div style="text-align:center">
+            <div style="font-family:'Cormorant Garamond',serif;font-size:32px;color:var(--accent)">100%</div>
+            <div style="font-size:10px;color:var(--ink3);letter-spacing:0.1em;text-transform:uppercase">Farm Fresh</div>
+          </div>
+          <div style="text-align:center">
+            <div style="font-family:'Cormorant Garamond',serif;font-size:32px;color:var(--accent)">∞</div>
+            <div style="font-size:10px;color:var(--ink3);letter-spacing:0.1em;text-transform:uppercase">Breakfast Buffet</div>
+          </div>
+        </div>
+      </div>
+      <div style="height:420px;background:url('https://images.trvl-media.com/lodging/120000000/119770000/119762000/119761966/d59ceade.jpg') center/cover;border-radius:16px;box-shadow:var(--shadow-lg)" class="reveal"></div>
+    </div>
+
+    <!-- Category Filter -->
+    <div class="gallery-filter reveal">
+      <% const cats = ['all','breakfast','lunch','dinner','snacks','beverages','special']; %>
+      <% cats.forEach(c => { %>
+      <a href="/dining<%= c!=='all' ? '?category='+c : '' %>" class="gallery-btn <%= currentCat === c ? 'active' : '' %>">
+        <%= c.charAt(0).toUpperCase() + c.slice(1) %>
+      </a>
+      <% }) %>
+    </div>
+
+    <!-- Menu Items Grid -->
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:8px">
+      <%
+      const defaultItems = [
+        { name:'Farm Breakfast Buffet',    category:'breakfast', price:0,   isVeg:true,  isSpecial:false, description:'Daily buffet with farm-fresh produce, breads, cereals, and fresh juices.' },
+        { name:'Marathwada Thali',         category:'lunch',     price:350, isVeg:true,  isSpecial:true,  description:'Authentic regional thali — dal, 3 sabzis, bhakri, rice, papad, pickle, and dessert.' },
+        { name:'Tandoori Platter',         category:'dinner',    price:450, isVeg:false, isSpecial:true,  description:'Mixed tandoori with seekh kebab, chicken tikka, paneer, naan, and raita.' },
+        { name:'Veg Biryani',              category:'lunch',     price:280, isVeg:true,  isSpecial:false, description:'Fragrant basmati cooked with seasonal vegetables and house spices.' },
+        { name:'Poolside Snack Platter',   category:'snacks',    price:250, isVeg:true,  isSpecial:false, description:'Samosas, pakoras, poha, and sandwiches — perfect poolside munchies.' },
+        { name:'Fresh Seasonal Juices',    category:'beverages', price:120, isVeg:true,  isSpecial:false, description:'Freshly pressed mango, sugarcane, pomegranate, or watermelon juice.' },
+        { name:'Weekend BBQ Spread',       category:'special',   price:600, isVeg:false, isSpecial:true,  description:'Friday & Saturday special — grilled meats, corn on cob, dips, breads, bonfire.' },
+        { name:'South Indian Breakfast',   category:'breakfast', price:0,   isVeg:true,  isSpecial:false, description:'Idli, dosa, vada served with sambar, coconut chutney, and filter coffee.' },
+        { name:'Dal Bati Churma',          category:'dinner',    price:380, isVeg:true,  isSpecial:true,  description:'Traditional Rajasthani-style dal bati with ghee and churma — a crowd favourite.' },
+      ];
+      const displayItems = (items && items.length > 0) ? items : defaultItems;
+      const filtered = currentCat === 'all' ? displayItems : displayItems.filter(i => i.category === currentCat);
+      filtered.forEach(item => {
+      %>
+      <div class="reveal" style="background:var(--white);border:1px solid var(--line);border-radius:16px;overflow:hidden;transition:all 0.3s ease" onmouseenter="this.style.transform='translateY(-4px)';this.style.boxShadow='0 20px 60px rgba(0,0,0,0.1)'" onmouseleave="this.style.transform='';this.style.boxShadow=''">
+        <% if(item.image && item.image.url) { %>
+        <div style="height:180px;background:url('<%= item.image.url %>') center/cover"></div>
+        <% } else { %>
+        <div style="height:120px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center">
+          <span style="font-size:40px"><%= item.category==='breakfast'?'🌅':item.category==='lunch'?'🍛':item.category==='dinner'?'🌙':item.category==='snacks'?'🍟':item.category==='beverages'?'🥤':item.category==='special'?'✨':'🍽️' %></span>
+        </div>
+        <% } %>
+        <div style="padding:20px">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+            <div>
+              <% if(item.isSpecial) { %><span style="font-size:9px;background:var(--gold);color:white;padding:2px 8px;border-radius:100px;letter-spacing:0.1em;text-transform:uppercase;margin-right:6px">Chef's Special</span><% } %>
+              <span style="font-size:9px;background:<%= item.isVeg ? '#e8f5e9' : '#ffebee' %>;color:<%= item.isVeg ? '#2e7d32' : '#c62828' %>;padding:2px 8px;border-radius:100px">
+                <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:<%= item.isVeg ? '#2e7d32' : '#c62828' %>;margin-right:4px"></span><%= item.isVeg ? 'Veg' : 'Non-Veg' %>
+              </span>
+            </div>
+            <div style="font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--accent);font-weight:500">
+              <%= item.price > 0 ? '₹' + item.price : 'Complimentary' %>
+            </div>
+          </div>
+          <div style="font-size:15px;font-weight:500;color:var(--ink);margin-bottom:6px"><%= item.name %></div>
+          <div style="font-size:12px;color:var(--ink3);line-height:1.6"><%= item.description %></div>
+          <div style="margin-top:12px;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink3)"><%= item.category.charAt(0).toUpperCase()+item.category.slice(1) %></div>
+        </div>
+      </div>
+      <% }) %>
+    </div>
+
+    <div style="margin-top:60px;padding:40px;background:var(--accent);border-radius:16px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap" class="reveal">
+      <div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:28px;color:white;margin-bottom:6px">Book Your Dining Experience</div>
+        <div style="font-size:13px;color:rgba(255,255,255,0.7)">Reserve a table or pre-order for your stay</div>
+      </div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <a href="tel:+917775947728" class="hero-btn-primary" style="background:white;color:var(--accent)"><i class="fas fa-phone-alt"></i> Call to Reserve</a>
+        <a href="https://wa.me/917775947728" target="_blank" class="hero-btn-ghost"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<a href="https://wa.me/917775947728" target="_blank" class="whatsapp-float"><i class="fab fa-whatsapp"></i></a>
+<%- include('partials/footer') %>

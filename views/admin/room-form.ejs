@@ -1,0 +1,80 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title><%= room ? 'Edit' : 'Add' %> Room — Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/css/admin.css">
+</head><body>
+<div class="admin-layout">
+  <%- include('../partials/admin-sidebar', { page: page, admin: admin }) %>
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <div><div class="topbar-title"><%= room ? 'Edit Room' : 'Add New Room' %></div><div class="topbar-breadcrumb"><a href="/admin/rooms">Rooms</a> · <%= room ? 'Edit' : 'New' %></div></div>
+      <a href="/admin/rooms" class="topbar-btn topbar-btn-outline"><i class="fas fa-arrow-left"></i> Back</a>
+    </div>
+    <div class="admin-content" style="max-width:800px">
+      <% if(error) { %><div class="adm-alert adm-alert-error"><i class="fas fa-exclamation-circle"></i> <%= error %></div><% } %>
+      <div class="data-card" style="padding:36px">
+        <form method="POST" action="<%= room ? '/admin/rooms/' + room._id + '?_method=PUT' : '/admin/rooms' %>" enctype="multipart/form-data">
+          <div class="adm-form-row">
+            <div class="adm-form-group"><label class="adm-label">Room Name *</label><input class="adm-input" type="text" name="name" value="<%= room ? room.name : '' %>" required placeholder="e.g. Garden View Villa"></div>
+            <div class="adm-form-group"><label class="adm-label">Room Type *</label><input class="adm-input" type="text" name="type" value="<%= room ? room.type : '' %>" required placeholder="e.g. Villa, Suite, Deluxe Room"></div>
+          </div>
+          <div class="adm-form-row adm-form-row-3">
+            <div class="adm-form-group"><label class="adm-label">Price / Night (₹) *</label><input class="adm-input" type="number" name="price" value="<%= room ? room.price : '' %>" required placeholder="2500"></div>
+            <div class="adm-form-group"><label class="adm-label">Capacity</label><input class="adm-input" type="number" name="capacity" value="<%= room ? room.capacity : 2 %>" placeholder="2"></div>
+            <div class="adm-form-group"><label class="adm-label">Size</label><input class="adm-input" type="text" name="size" value="<%= room ? room.size : '' %>" placeholder="e.g. 45 sqm"></div>
+          </div>
+          <div class="adm-form-group" style="margin-bottom:20px"><label class="adm-label">Description</label><textarea class="adm-input" name="description" rows="4" placeholder="Describe the room..."><%= room ? room.description : '' %></textarea></div>
+          <div class="adm-form-group" style="margin-bottom:20px"><label class="adm-label">Amenities (comma-separated)</label><input class="adm-input" type="text" name="amenities" value="<%= room ? room.amenities.join(', ') : '' %>" placeholder="AC, Free WiFi, Smart TV, Mini Bar, Breakfast"></div>
+          <div class="adm-form-row">
+            <div class="adm-form-group">
+              <label class="adm-label">Available</label>
+              <select class="adm-input" name="available"><option value="on" <%= !room || room.available ? 'selected' : '' %>>Yes</option><option value="off" <%= room && !room.available ? 'selected' : '' %>>No</option></select>
+            </div>
+            <div class="adm-form-group">
+              <label class="adm-label">Featured on Home</label>
+              <select class="adm-input" name="featured"><option value="on" <%= room && room.featured ? 'selected' : '' %>>Yes</option><option value="off" <%= !room || !room.featured ? 'selected' : '' %>>No</option></select>
+            </div>
+          </div>
+          <% if(room && room.images && room.images.length > 0) { %>
+          <div class="adm-form-group" style="margin-bottom:20px">
+            <label class="adm-label">Current Images</label>
+            <div class="room-img-grid">
+              <% room.images.forEach(img => { %><img src="<%= img.url %>" class="room-img-thumb"><% }) %>
+            </div>
+          </div>
+          <% } %>
+          <div class="adm-form-group" style="margin-bottom:28px">
+            <label class="adm-label">Upload Images (max 10)</label>
+            <div class="upload-area" onclick="document.getElementById('roomImages').click()">
+              <i class="fas fa-cloud-upload-alt"></i>
+              <div style="font-size:13px;color:var(--adm-ink2);margin-top:8px">Click to upload room images</div>
+              <div style="font-size:11px;color:#aaa;margin-top:4px">JPG, PNG, WebP supported</div>
+            </div>
+            <input type="file" id="roomImages" name="images" multiple accept="image/*" style="display:none">
+            <div id="imgPreview" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px"></div>
+          </div>
+          <button type="submit" class="btn-adm btn-adm-primary" style="padding:12px 32px;font-size:13px"><i class="fas fa-save"></i> <%= room ? 'Update Room' : 'Create Room' %></button>
+        </form>
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+document.getElementById('roomImages').addEventListener('change', function() {
+  const preview = document.getElementById('imgPreview');
+  preview.innerHTML = '';
+  Array.from(this.files).forEach(file => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = document.createElement('img');
+      img.src = e.target.result;
+      img.style.cssText = 'width:80px;height:60px;object-fit:cover;border-radius:6px;border:2px solid var(--adm-line)';
+      preview.appendChild(img);
+    };
+    reader.readAsDataURL(file);
+  });
+});
+</script>
+</body></html>

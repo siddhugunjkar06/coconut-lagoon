@@ -1,0 +1,142 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Dining Management — Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/css/admin.css">
+</head><body>
+<div class="admin-layout">
+  <%- include('../partials/admin-sidebar', { page: 'dining', admin: admin }) %>
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <div><div class="topbar-title">Dining Menu</div><div class="topbar-breadcrumb">Manage D'Oasis Restaurant menu items (<%= items.length %> items)</div></div>
+      <button onclick="document.getElementById('addModal').style.display='flex'" class="topbar-btn topbar-btn-primary"><i class="fas fa-plus"></i> Add Menu Item</button>
+    </div>
+    <div class="admin-content">
+      <% if(success && success.length > 0) { %><div class="adm-alert adm-alert-success"><i class="fas fa-check-circle"></i> <%= success %></div><% } %>
+      <% if(error && error.length > 0) { %><div class="adm-alert adm-alert-error"><i class="fas fa-exclamation-circle"></i> <%= error %></div><% } %>
+
+      <!-- Category filter -->
+      <div class="filter-bar" style="margin-bottom:24px">
+        <% ['all','breakfast','lunch','dinner','snacks','beverages','special'].forEach(c => { %>
+        <a href="/admin/dining<%= c!=='all'?'?category='+c:'' %>" class="topbar-btn <%= currentCat===c?'topbar-btn-primary':'topbar-btn-outline' %>"><%= c.charAt(0).toUpperCase()+c.slice(1) %></a>
+        <% }) %>
+      </div>
+
+      <div class="data-card">
+        <table class="adm-table">
+          <thead><tr><th>Image</th><th>Name</th><th>Category</th><th>Price</th><th>Type</th><th>Special</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody>
+          <% if(!items.length) { %><tr><td colspan="8"><div class="empty-state"><i class="fas fa-utensils" style="display:block;font-size:28px;margin-bottom:10px"></i>No menu items. Add your first item!</div></td></tr><% } %>
+          <% items.forEach(item => { %>
+          <tr>
+            <td>
+              <% if(item.image && item.image.url) { %>
+              <img src="<%= item.image.url %>" style="width:60px;height:45px;object-fit:cover;border-radius:6px">
+              <% } else { %>
+              <div style="width:60px;height:45px;border-radius:6px;background:var(--adm-bg);display:flex;align-items:center;justify-content:center;font-size:20px"><%= item.category==='breakfast'?'🌅':item.category==='lunch'?'🍛':item.category==='dinner'?'🌙':item.category==='snacks'?'🍟':item.category==='beverages'?'🥤':'✨' %></div>
+              <% } %>
+            </td>
+            <td><div style="font-weight:500"><%= item.name %></div><div style="font-size:11px;color:#aaa;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"><%= item.description %></div></td>
+            <td><span style="font-size:11px;background:var(--adm-bg);padding:3px 10px;border-radius:100px;text-transform:capitalize"><%= item.category %></span></td>
+            <td style="font-weight:500;color:var(--adm-accent)"><%= item.price > 0 ? '₹'+item.price : 'Free' %></td>
+            <td><span style="font-size:11px;background:<%= item.isVeg?'#e8f5e9':'#ffebee' %>;color:<%= item.isVeg?'#2e7d32':'#c62828' %>;padding:3px 10px;border-radius:100px"><%= item.isVeg?'🟢 Veg':'🔴 Non-Veg' %></span></td>
+            <td><%= item.isSpecial ? '<i class="fas fa-star" style="color:#f9a825"></i> Special' : '—' %></td>
+            <td><span class="badge-status <%= item.available?'badge-confirmed':'badge-cancelled' %>"><%= item.available?'Active':'Hidden' %></span></td>
+            <td style="display:flex;gap:8px">
+              <button onclick='openEdit(<%= JSON.stringify({_id:item._id,name:item.name,description:item.description,category:item.category,price:item.price,isVeg:item.isVeg,isSpecial:item.isSpecial,available:item.available,order:item.order}) %>)' class="btn-adm btn-adm-outline btn-adm-sm"><i class="fas fa-edit"></i></button>
+              <button class="btn-adm btn-adm-danger btn-adm-sm delete-btn" data-url="/admin/dining/<%= item._id %>"><i class="fas fa-trash"></i></button>
+            </td>
+          </tr>
+          <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ADD MODAL -->
+<div id="addModal" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.5);align-items:center;justify-content:center;padding:20px">
+  <div style="background:white;border-radius:16px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto">
+    <div style="padding:24px 28px;border-bottom:1px solid var(--adm-line);display:flex;justify-content:space-between">
+      <div style="font-size:16px;font-weight:500">Add Menu Item</div>
+      <button onclick="document.getElementById('addModal').style.display='none'" style="font-size:18px;color:#aaa;cursor:pointer"><i class="fas fa-times"></i></button>
+    </div>
+    <form method="POST" action="/admin/dining" enctype="multipart/form-data" style="padding:24px 28px;display:grid;gap:14px">
+      <div class="adm-form-row">
+        <div class="adm-form-group"><label class="adm-label">Item Name *</label><input class="adm-input" name="name" required placeholder="e.g. Marathwada Thali"></div>
+        <div class="adm-form-group">
+          <label class="adm-label">Category *</label>
+          <select class="adm-input" name="category">
+            <% ['breakfast','lunch','dinner','snacks','beverages','special'].forEach(c => { %><option value="<%= c %>"><%= c.charAt(0).toUpperCase()+c.slice(1) %></option><% }) %>
+          </select>
+        </div>
+      </div>
+      <div class="adm-form-group"><label class="adm-label">Description</label><textarea class="adm-input" name="description" rows="2" placeholder="Brief description..."></textarea></div>
+      <div class="adm-form-row">
+        <div class="adm-form-group"><label class="adm-label">Price (₹) — 0 for free</label><input class="adm-input" name="price" type="number" min="0" placeholder="350"></div>
+        <div class="adm-form-group"><label class="adm-label">Order No.</label><input class="adm-input" name="order" type="number" placeholder="1"></div>
+      </div>
+      <div class="adm-form-row">
+        <div class="adm-form-group"><label class="adm-label">Veg / Non-Veg</label><select class="adm-input" name="isVeg"><option value="true">🟢 Vegetarian</option><option value="false">🔴 Non-Vegetarian</option></select></div>
+        <div class="adm-form-group"><label class="adm-label">Chef's Special</label><select class="adm-input" name="isSpecial"><option value="false">No</option><option value="true">Yes</option></select></div>
+      </div>
+      <div class="adm-form-group"><label class="adm-label">Image (optional)</label><input class="adm-input" type="file" name="image" accept="image/*" style="padding:8px"></div>
+      <button type="submit" class="btn-adm btn-adm-primary" style="width:100%;padding:12px;justify-content:center"><i class="fas fa-plus"></i> Add Item</button>
+    </form>
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div id="editModal" style="display:none;position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.5);align-items:center;justify-content:center;padding:20px">
+  <div style="background:white;border-radius:16px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto">
+    <div style="padding:24px 28px;border-bottom:1px solid var(--adm-line);display:flex;justify-content:space-between">
+      <div style="font-size:16px;font-weight:500">Edit Menu Item</div>
+      <button onclick="document.getElementById('editModal').style.display='none'" style="font-size:18px;color:#aaa;cursor:pointer"><i class="fas fa-times"></i></button>
+    </div>
+    <form id="editForm" method="POST" enctype="multipart/form-data" style="padding:24px 28px;display:grid;gap:14px">
+      <input type="hidden" name="_method" value="PUT">
+      <div class="adm-form-row">
+        <div class="adm-form-group"><label class="adm-label">Item Name</label><input class="adm-input" name="name" id="eName" required></div>
+        <div class="adm-form-group"><label class="adm-label">Category</label><select class="adm-input" name="category" id="eCat"><% ['breakfast','lunch','dinner','snacks','beverages','special'].forEach(c => { %><option value="<%= c %>"><%= c.charAt(0).toUpperCase()+c.slice(1) %></option><% }) %></select></div>
+      </div>
+      <div class="adm-form-group"><label class="adm-label">Description</label><textarea class="adm-input" name="description" id="eDesc" rows="2"></textarea></div>
+      <div class="adm-form-row">
+        <div class="adm-form-group"><label class="adm-label">Price (₹)</label><input class="adm-input" name="price" id="ePrice" type="number" min="0"></div>
+        <div class="adm-form-group"><label class="adm-label">Order No.</label><input class="adm-input" name="order" id="eOrder" type="number"></div>
+      </div>
+      <div class="adm-form-row">
+        <div class="adm-form-group"><label class="adm-label">Veg / Non-Veg</label><select class="adm-input" name="isVeg" id="eVeg"><option value="true">🟢 Veg</option><option value="false">🔴 Non-Veg</option></select></div>
+        <div class="adm-form-group"><label class="adm-label">Chef's Special</label><select class="adm-input" name="isSpecial" id="eSpecial"><option value="false">No</option><option value="true">Yes</option></select></div>
+      </div>
+      <div class="adm-form-group"><label class="adm-label">Status</label><select class="adm-input" name="available" id="eAvail"><option value="true">Active</option><option value="false">Hidden</option></select></div>
+      <div class="adm-form-group"><label class="adm-label">New Image (optional)</label><input class="adm-input" type="file" name="image" accept="image/*" style="padding:8px"></div>
+      <button type="submit" class="btn-adm btn-adm-primary" style="width:100%;padding:12px;justify-content:center"><i class="fas fa-save"></i> Update Item</button>
+    </form>
+  </div>
+</div>
+
+<script>
+function openEdit(item) {
+  document.getElementById('editForm').action = '/admin/dining/' + item._id;
+  document.getElementById('eName').value    = item.name;
+  document.getElementById('eDesc').value    = item.description || '';
+  document.getElementById('eCat').value     = item.category;
+  document.getElementById('ePrice').value   = item.price || 0;
+  document.getElementById('eOrder').value   = item.order || 0;
+  document.getElementById('eVeg').value     = String(item.isVeg !== false);
+  document.getElementById('eSpecial').value = String(item.isSpecial === true);
+  document.getElementById('eAvail').value   = String(item.available !== false);
+  document.getElementById('editModal').style.display = 'flex';
+}
+document.querySelectorAll('.delete-btn').forEach(btn => {
+  btn.addEventListener('click', async () => {
+    if (!confirm('Delete this menu item?')) return;
+    const res = await fetch(btn.dataset.url, { method: 'DELETE' });
+    const d = await res.json();
+    if (d.success) btn.closest('tr').remove();
+  });
+});
+</script>
+</body></html>

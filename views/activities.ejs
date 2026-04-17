@@ -1,0 +1,69 @@
+<%- include('partials/head', { title: 'Activities & Experiences' }) %>
+<%- include('partials/navbar') %>
+
+<div class="page-hero" style="padding-top:72px">
+  <div class="page-hero-bg" style="background-image:url('https://images.trvl-media.com/lodging/120000000/119770000/119762000/119761966/0af54401.jpg')"></div>
+  <div class="page-hero-overlay"></div>
+  <div class="page-hero-content">
+    <div class="page-hero-label">Things To Do</div>
+    <h1 class="page-hero-title">Activities & <em>Experiences</em></h1>
+  </div>
+</div>
+
+<section class="section" style="background:var(--bg)">
+  <div class="container">
+    <div style="text-align:center;max-width:640px;margin:0 auto 60px" class="reveal">
+      <div class="section-label" style="justify-content:center">Experiences</div>
+      <h2 class="section-title">Adventures Await <em>You</em></h2>
+      <p class="section-sub" style="margin:16px auto 0">From splashing in the pool to exploring farmlands — every moment at Coconut Lagoon is crafted for joy and wonder.</p>
+    </div>
+
+    <%
+    const defaultActs = [
+      { name:'Swimming Pool & Rain Dance', category:'water',    duration:'All day',  price:0, included:true,  icon:'fas fa-swimming-pool', description:'Olympic-style pool with rain dance. Splash, swim, and soak — open from 7AM to 7PM daily.' },
+      { name:'Farm Walk & Agro Tour',      category:'cultural', duration:'2 hours',  price:0, included:true,  icon:'fas fa-tractor',       description:'Walk through our organic farm, learn about seasonal crops, and experience life on the land.' },
+      { name:'Bonfire Nights',             category:'cultural', duration:'2-3 hours',price:0, included:true,  icon:'fas fa-fire',          description:'Gather around a warm bonfire under the stars with music, stories and snacks.' },
+      { name:'Bird Watching Walk',         category:'land',     duration:'1.5 hours',price:0, included:true,  icon:'fas fa-dove',          description:'Guided morning walk spotting local birds through the resort\'s green surroundings.' },
+      { name:'Indoor Games Room',          category:'kids',     duration:'Flexible', price:0, included:true,  icon:'fas fa-chess',         description:'Carrom, chess, table tennis, carom — fun for kids and adults alike.' },
+      { name:'Cycling Tour',              category:'land',     duration:'1 hour',   price:200,included:false, icon:'fas fa-bicycle',       description:'Explore the scenic countryside around Pingali on our resort bicycles.' },
+      { name:'Sunrise Yoga',              category:'wellness', duration:'1 hour',   price:0, included:true,  icon:'fas fa-spa',           description:'Start your morning with guided yoga on our outdoor deck as the sun rises.' },
+      { name:'Kids Play Zone',            category:'kids',     duration:'All day',  price:0, included:true,  icon:'fas fa-child',         description:'Dedicated play area with swings, slides, and fun activities for children.' },
+    ];
+    const displayActs = (activities && activities.length > 0) ? activities : defaultActs;
+    const catColors = { water:'#e3f2fd', land:'#e8f5e9', cultural:'#fff3e0', adventure:'#fce4ec', wellness:'#f3e5f5', kids:'#fff8e1' };
+    const catTextColors = { water:'#1565c0', land:'#2e7d32', cultural:'#e65100', adventure:'#880e4f', wellness:'#6a1b9a', kids:'#f57f17' };
+    %>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px">
+      <% displayActs.forEach(act => { %>
+      <div class="reveal" style="background:var(--white);border:1px solid var(--line);border-radius:16px;padding:28px;transition:all 0.35s ease;position:relative;overflow:hidden" onmouseenter="this.style.transform='translateY(-4px)';this.style.boxShadow='0 20px 60px rgba(0,0,0,0.1)';this.querySelector('.act-icon').style.background='var(--accent)';this.querySelector('.act-icon').style.color='white'" onmouseleave="this.style.transform='';this.style.boxShadow='';this.querySelector('.act-icon').style.background='var(--card)';this.querySelector('.act-icon').style.color='var(--accent)'">
+        <% if(act.included || act.price === 0) { %>
+        <span style="position:absolute;top:20px;right:20px;font-size:9px;background:#e8f5e9;color:#2e7d32;padding:3px 10px;border-radius:100px;font-weight:500;letter-spacing:0.08em">INCLUDED</span>
+        <% } else { %>
+        <span style="position:absolute;top:20px;right:20px;font-size:11px;background:#fff3e0;color:#e65100;padding:3px 10px;border-radius:100px;font-weight:500">₹<%= act.price %>/person</span>
+        <% } %>
+        <div class="act-icon" style="width:52px;height:52px;border-radius:14px;background:var(--card);display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:22px;margin-bottom:16px;transition:all 0.3s">
+          <i class="<%= act.icon || 'fas fa-star' %>"></i>
+        </div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:20px;color:var(--ink);margin-bottom:8px"><%= act.name %></div>
+        <div style="font-size:12px;color:var(--ink3);line-height:1.6;margin-bottom:16px"><%= act.description %></div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <span style="font-size:10px;background:<%= catColors[act.category]||'#f5f5f5' %>;color:<%= catTextColors[act.category]||'#555' %>;padding:3px 10px;border-radius:100px;text-transform:capitalize"><%= act.category %></span>
+          <% if(act.duration) { %><span style="font-size:11px;color:var(--ink3)"><i class="fas fa-clock" style="margin-right:4px;font-size:10px"></i><%= act.duration %></span><% } %>
+        </div>
+      </div>
+      <% }) %>
+    </div>
+
+    <div style="margin-top:60px;text-align:center" class="reveal">
+      <p style="font-size:14px;color:var(--ink2);margin-bottom:20px">Want to plan activities for your group? Call us and we'll customise your experience.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <a href="tel:+917775947728" class="btn-primary"><i class="fas fa-phone-alt"></i> +91 77759 47728</a>
+        <a href="/booking" class="btn-outline">Book a Stay <i class="fas fa-arrow-right"></i></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<a href="https://wa.me/917775947728" target="_blank" class="whatsapp-float"><i class="fab fa-whatsapp"></i></a>
+<%- include('partials/footer') %>

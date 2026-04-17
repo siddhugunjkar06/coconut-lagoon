@@ -1,0 +1,259 @@
+<%- include('partials/head', { title: 'Rooms & Suites' }) %>
+<%- include('partials/navbar') %>
+
+<div class="page-hero" style="padding-top:72px">
+  <div class="page-hero-bg" style="background-image:url('https://images.trvl-media.com/lodging/120000000/119770000/119762000/119761966/e7aae43a.jpg')"></div>
+  <div class="page-hero-overlay"></div>
+  <div class="page-hero-content">
+    <div class="page-hero-label">Accommodation</div>
+    <h1 class="page-hero-title">Rooms & <em>Suites</em></h1>
+  </div>
+</div>
+
+<section class="section" style="background:var(--bg)">
+  <div class="container">
+    <div class="rooms-grid" style="margin-top:0">
+      <% if(rooms && rooms.length > 0) { rooms.forEach(room => { %>
+      <div class="room-card reveal" style="background:var(--white);border:1px solid var(--line)">
+        <div class="room-img">
+          <div class="room-img-bg" style="background-image:url('<%= room.images && room.images[0] ? room.images[0].url : "https://images.trvl-media.com/lodging/120000000/119770000/119762000/119761966/0af54401.jpg" %>')"></div>
+          <div class="room-img-overlay"></div>
+          <div class="room-price-tag">₹<%= room.price.toLocaleString('en-IN') %>/night</div>
+          <% if(!room.available) { %><div style="position:absolute;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center"><span style="background:#dc3545;color:white;padding:8px 20px;border-radius:100px;font-size:12px;font-weight:500">Currently Unavailable</span></div><% } %>
+        </div>
+        <div class="room-body">
+          <div class="room-type" style="color:var(--accent)"><%= room.type %></div>
+          <div class="room-name" style="color:var(--ink)"><%= room.name %></div>
+          <div class="room-desc" style="color:var(--ink2)"><%= room.description ? room.description.substring(0,120) + '...' : '' %></div>
+          <div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap">
+            <span style="font-size:11px;color:var(--ink2)"><i class="fas fa-user" style="color:var(--accent)"></i> Up to <%= room.capacity %> guests</span>
+            <% if(room.size) { %><span style="font-size:11px;color:var(--ink2)"><i class="fas fa-ruler-combined" style="color:var(--accent)"></i> <%= room.size %></span><% } %>
+          </div>
+          <div class="room-amenities">
+            <% (room.amenities || []).slice(0,5).forEach(a => { %><span class="room-amenity" style="background:var(--card);color:var(--ink2)"><i class="fas fa-check" style="color:var(--accent)"></i> <%= a %></span><% }) %>
+          </div>
+          <div class="room-footer" style="border-top-color:var(--line)">
+            <div>
+              <div class="room-price-main" style="color:var(--ink)">₹<%= room.price.toLocaleString('en-IN') %> <span>/ night</span></div>
+              <div style="font-size:10px;color:var(--ink3);margin-top:2px">+taxes · No advance payment</div>
+            </div>
+            <% if(room.available) { %>
+            <button onclick="openBooking('<%= room._id %>','<%= room.name %>',<%= room.price %>)" class="room-book-btn" style="background:var(--accent)">Book Now <i class="fas fa-arrow-right"></i></button>
+            <% } else { %>
+            <span style="font-size:11px;color:#dc3545;font-weight:500">Unavailable</span>
+            <% } %>
+          </div>
+        </div>
+      </div>
+      <% }); } %>
+    </div>
+  </div>
+</section>
+
+<!-- BOOKING MODAL -->
+<div id="bookingModal" style="display:none;position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);overflow-y:auto;padding:40px 20px">
+  <div style="background:white;max-width:560px;margin:0 auto;border-radius:24px;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,0.4)">
+    <!-- Modal Header -->
+    <div style="background:var(--accent);padding:28px 32px;display:flex;justify-content:space-between;align-items:center">
+      <div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.6);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:4px">Reservations</div>
+        <div id="modalRoomName" style="font-family:'Cormorant Garamond',serif;font-size:24px;color:white"></div>
+      </div>
+      <button onclick="closeBooking()" style="color:rgba(255,255,255,0.7);font-size:20px;padding:8px;border-radius:50%;transition:background 0.2s" onmouseenter="this.style.background='rgba(255,255,255,0.15)'" onmouseleave="this.style.background='transparent'"><i class="fas fa-times"></i></button>
+    </div>
+    <!-- Modal Body -->
+    <div style="padding:32px">
+      <!-- Availability Check -->
+      <div id="availabilityMsg" style="display:none;padding:12px 16px;border-radius:10px;font-size:13px;margin-bottom:20px"></div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+        <div>
+          <label style="font-size:10px;color:var(--ink3);letter-spacing:0.12em;text-transform:uppercase;display:block;margin-bottom:6px">Check-in *</label>
+          <input type="date" id="mCheckIn" onchange="checkAvail()" style="width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;font-size:14px;outline:none" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--line)'">
+        </div>
+        <div>
+          <label style="font-size:10px;color:var(--ink3);letter-spacing:0.12em;text-transform:uppercase;display:block;margin-bottom:6px">Check-out *</label>
+          <input type="date" id="mCheckOut" onchange="checkAvail()" style="width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;font-size:14px;outline:none" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--line)'">
+        </div>
+      </div>
+      <div style="margin-bottom:14px">
+        <label style="font-size:10px;color:var(--ink3);letter-spacing:0.12em;text-transform:uppercase;display:block;margin-bottom:6px">Guests</label>
+        <select id="mGuests" style="width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;font-size:14px;outline:none;background:white">
+          <option value="1">1 Guest</option><option value="2" selected>2 Guests</option><option value="3">3 Guests</option><option value="4">4 Guests</option><option value="5">5+ Guests</option>
+        </select>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+        <div>
+          <label style="font-size:10px;color:var(--ink3);letter-spacing:0.12em;text-transform:uppercase;display:block;margin-bottom:6px">Full Name *</label>
+          <input type="text" id="mName" placeholder="Your name" style="width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;font-size:14px;outline:none" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--line)'">
+        </div>
+        <div>
+          <label style="font-size:10px;color:var(--ink3);letter-spacing:0.12em;text-transform:uppercase;display:block;margin-bottom:6px">Phone *</label>
+          <input type="tel" id="mPhone" placeholder="+91 XXXXX XXXXX" style="width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;font-size:14px;outline:none" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--line)'">
+        </div>
+      </div>
+      <div style="margin-bottom:14px">
+        <label style="font-size:10px;color:var(--ink3);letter-spacing:0.12em;text-transform:uppercase;display:block;margin-bottom:6px">Email *</label>
+        <input type="email" id="mEmail" placeholder="your@email.com" style="width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;font-size:14px;outline:none" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--line)'">
+      </div>
+      <div style="margin-bottom:20px">
+        <label style="font-size:10px;color:var(--ink3);letter-spacing:0.12em;text-transform:uppercase;display:block;margin-bottom:6px">Special Requests</label>
+        <textarea id="mRequests" rows="2" placeholder="Dietary needs, early check-in, celebrations..." style="width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;font-size:14px;outline:none;resize:none" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--line)'"></textarea>
+      </div>
+
+      <!-- Price Summary -->
+      <div id="priceSummary" style="display:none;background:var(--bg);border-radius:12px;padding:16px;margin-bottom:20px;font-size:13px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="color:var(--ink2)">Room rate</span><span id="sumRate">—</span></div>
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="color:var(--ink2)">Nights</span><span id="sumNights">—</span></div>
+        <div style="display:flex;justify-content:space-between;padding-top:10px;border-top:1px solid var(--line);font-weight:600;color:var(--accent);font-size:15px"><span>Total</span><span id="sumTotal">—</span></div>
+      </div>
+
+      <!-- Payment Buttons -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <button onclick="submitBooking('offline')" id="payOfflineBtn" style="padding:14px;background:white;border:1.5px solid var(--accent);color:var(--accent);border-radius:100px;font-size:11px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:all 0.3s" onmouseenter="this.style.background='var(--accent)';this.style.color='white'" onmouseleave="this.style.background='white';this.style.color='var(--accent)'">
+          <i class="fas fa-hotel"></i> Pay at Resort
+        </button>
+        <button onclick="submitBooking('online')" id="payOnlineBtn" style="padding:14px;background:var(--accent);color:white;border:none;border-radius:100px;font-size:11px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:all 0.3s" onmouseenter="this.style.background='var(--gold)'" onmouseleave="this.style.background='var(--accent)'">
+          <i class="fas fa-credit-card"></i> Pay Online
+        </button>
+      </div>
+      <div style="text-align:center;margin-top:14px;font-size:11px;color:var(--ink3)">
+        <i class="fas fa-shield-alt" style="color:var(--accent)"></i> Secure · No hidden fees · Free cancellation 24h before
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SUCCESS MODAL -->
+<div id="successModal" style="display:none;position:fixed;inset:0;z-index:9100;background:rgba(0,0,0,0.8);display:none;align-items:center;justify-content:center;padding:20px">
+  <div style="background:white;max-width:440px;width:100%;border-radius:24px;padding:48px 40px;text-align:center;box-shadow:0 40px 100px rgba(0,0,0,0.4)">
+    <div style="width:64px;height:64px;border-radius:50%;background:#e8f5e9;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:28px">✅</div>
+    <h3 style="font-family:'Cormorant Garamond',serif;font-size:28px;margin-bottom:10px;color:var(--ink)">Booking Confirmed!</h3>
+    <p style="font-size:13px;color:var(--ink2);margin-bottom:20px" id="successMsg"></p>
+    <div id="bookingIdDisplay" style="background:var(--bg);padding:14px 20px;border-radius:10px;font-family:monospace;font-size:16px;font-weight:600;color:var(--accent);margin-bottom:24px"></div>
+    <a href="/booking/status" style="display:inline-block;padding:13px 32px;background:var(--accent);color:white;border-radius:100px;font-size:12px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;margin-right:10px">Check Status</a>
+    <button onclick="document.getElementById('successModal').style.display='none'" style="padding:12px 24px;border:1px solid var(--line);border-radius:100px;font-size:12px;color:var(--ink2);cursor:pointer">Close</button>
+  </div>
+</div>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+let currentRoomId = '', currentRoomPrice = 0, currentRoomName = '';
+const today = new Date().toISOString().split('T')[0];
+
+function openBooking(id, name, price) {
+  currentRoomId = id; currentRoomPrice = price; currentRoomName = name;
+  document.getElementById('modalRoomName').textContent = name;
+  document.getElementById('mCheckIn').min = today;
+  document.getElementById('mCheckOut').min = today;
+  document.getElementById('bookingModal').style.display = 'block';
+  document.body.style.overflow = 'hidden';
+}
+function closeBooking() {
+  document.getElementById('bookingModal').style.display = 'none';
+  document.body.style.overflow = '';
+}
+document.getElementById('bookingModal').addEventListener('click', e => { if (e.target === document.getElementById('bookingModal')) closeBooking(); });
+
+async function checkAvail() {
+  const ci = document.getElementById('mCheckIn').value;
+  const co = document.getElementById('mCheckOut').value;
+  if (!ci || !co || co <= ci) return;
+  const nights = Math.ceil((new Date(co) - new Date(ci)) / 86400000);
+  const msg = document.getElementById('availabilityMsg');
+  const sum = document.getElementById('priceSummary');
+  try {
+    const res = await fetch(`/payment/check-availability?roomId=${currentRoomId}&checkIn=${ci}&checkOut=${co}`);
+    const d = await res.json();
+    if (d.available) {
+      msg.style.display = 'block';
+      msg.style.background = '#e8f5e9'; msg.style.color = '#2e7d32';
+      msg.innerHTML = '<i class="fas fa-check-circle"></i> Room available for your dates!';
+      sum.style.display = 'block';
+      document.getElementById('sumRate').textContent = '₹' + currentRoomPrice.toLocaleString('en-IN') + '/night';
+      document.getElementById('sumNights').textContent = nights + ' night' + (nights > 1 ? 's' : '');
+      document.getElementById('sumTotal').textContent = '₹' + (currentRoomPrice * nights).toLocaleString('en-IN');
+    } else {
+      msg.style.display = 'block';
+      msg.style.background = '#ffebee'; msg.style.color = '#c62828';
+      msg.innerHTML = '<i class="fas fa-times-circle"></i> Not available for these dates. Please choose different dates.';
+      sum.style.display = 'none';
+    }
+  } catch(e) {}
+}
+
+async function submitBooking(method) {
+  const name = document.getElementById('mName').value.trim();
+  const phone = document.getElementById('mPhone').value.trim();
+  const email = document.getElementById('mEmail').value.trim();
+  const checkIn = document.getElementById('mCheckIn').value;
+  const checkOut = document.getElementById('mCheckOut').value;
+  if (!name || !phone || !email || !checkIn || !checkOut) return alert('Please fill in all required fields.');
+  if (!checkOut || checkOut <= checkIn) return alert('Check-out must be after check-in.');
+
+  const guests = document.getElementById('mGuests').value;
+  const specialRequests = document.getElementById('mRequests').value;
+
+  if (method === 'offline') {
+    // Submit as offline booking (existing route)
+    const form = document.createElement('form');
+    form.method = 'POST'; form.action = '/booking';
+    const fields = { name, phone, email, checkIn, checkOut, guests, specialRequests, roomType: currentRoomId };
+    Object.entries(fields).forEach(([k, v]) => {
+      const inp = document.createElement('input'); inp.type = 'hidden'; inp.name = k; inp.value = v;
+      form.appendChild(inp);
+    });
+    document.body.appendChild(form); form.submit();
+    return;
+  }
+
+  // Online payment via Razorpay
+  const payBtn = document.getElementById('payOnlineBtn');
+  payBtn.textContent = 'Creating order...'; payBtn.disabled = true;
+  try {
+    const res = await fetch('/payment/create-order', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ roomId: currentRoomId, checkIn, checkOut, guests, name, email, phone, specialRequests }),
+    });
+    const order = await res.json();
+    if (!order.success) { alert(order.error || 'Failed to create order'); payBtn.textContent = 'Pay Online'; payBtn.disabled = false; return; }
+
+    const options = {
+      key:         order.keyId,
+      amount:      order.amount,
+      currency:    order.currency,
+      name:        'Coconut Lagoon Agro Resort',
+      description: 'Room Booking — ' + currentRoomName,
+      order_id:    order.orderId,
+      prefill:     { name, email, contact: phone },
+      theme:       { color: '#2a5c3a' },
+      handler: async (response) => {
+        const vres = await fetch('/payment/verify', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...response, bookingDbId: order.bookingDbId }),
+        });
+        const vd = await vres.json();
+        if (vd.success) {
+          closeBooking();
+          document.getElementById('bookingIdDisplay').textContent = vd.bookingId;
+          document.getElementById('successMsg').textContent = 'Payment successful! Booking confirmed for ' + currentRoomName + '. Confirmation sent to ' + email;
+          const sm = document.getElementById('successModal');
+          sm.style.display = 'flex';
+        } else {
+          alert('Payment verification failed. Contact +91 77759 47728');
+        }
+      },
+      modal: { ondismiss: () => { payBtn.textContent = 'Pay Online'; payBtn.disabled = false; } },
+    };
+    const rzp = new Razorpay(options);
+    rzp.open();
+  } catch(e) {
+    alert('Error: ' + e.message);
+  } finally {
+    payBtn.textContent = 'Pay Online'; payBtn.disabled = false;
+  }
+}
+</script>
+
+<a href="https://wa.me/917775947728" target="_blank" class="whatsapp-float"><i class="fab fa-whatsapp"></i></a>
+<%- include('partials/footer') %>

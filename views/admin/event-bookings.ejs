@@ -1,0 +1,93 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Event Bookings — Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/css/admin.css">
+</head><body>
+<div class="admin-layout">
+  <%- include('../partials/admin-sidebar', { page: 'events', admin: admin }) %>
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <div>
+        <div class="topbar-title">Event Bookings</div>
+        <div class="topbar-breadcrumb">
+          <span style="background:#fff3cd;color:#856404;padding:2px 8px;border-radius:4px;font-size:11px;margin-right:6px"><i class="fas fa-info-circle"></i> Admin Confirmation Required</span>
+          All event bookings start as Pending
+        </div>
+      </div>
+      <div style="display:flex;gap:10px">
+        <a href="/admin/events" class="topbar-btn topbar-btn-outline"><i class="fas fa-calendar-alt"></i> Event Packages</a>
+      </div>
+    </div>
+    <div class="admin-content">
+      <!-- Status Filter -->
+      <div class="filter-bar">
+        <% ['all','pending','confirmed','cancelled'].forEach(s=>{ %>
+        <a href="/admin/event-bookings<%= s!=='all'?'?status='+s:'' %>" class="topbar-btn <%= status===s?'topbar-btn-primary':'topbar-btn-outline' %>"><%= s.charAt(0).toUpperCase()+s.slice(1) %></a>
+        <% }) %>
+      </div>
+
+      <div class="data-card">
+        <table class="adm-table">
+          <thead><tr><th>Booking ID</th><th>Client</th><th>Event</th><th>Date</th><th>Guests</th><th>Status</th><th>Submitted</th><th>Actions</th></tr></thead>
+          <tbody>
+          <%if(!bookings.length){%><tr><td colspan="8"><div class="empty-state"><i class="fas fa-calendar-times" style="display:block;font-size:28px;margin-bottom:10px"></i>No event bookings <%=status!=='all'?'with status: '+status:''%></div></td></tr><%}%>
+          <%bookings.forEach(b=>{%>
+          <tr>
+            <td><span style="font-family:monospace;font-size:11px;background:var(--adm-bg);padding:3px 8px;border-radius:4px"><%=b.eventBookingId%></span></td>
+            <td>
+              <div style="font-weight:500"><%=b.name%></div>
+              <div style="font-size:11px;color:#999"><%=b.phone%></div>
+              <div style="font-size:11px;color:#999"><%=b.email%></div>
+            </td>
+            <td><div style="font-weight:500;font-size:13px"><%=b.eventName%></div></td>
+            <td style="font-size:13px"><%=moment(b.eventDate).format('DD MMM YYYY')%></td>
+            <td><%=b.guests%> guests</td>
+            <td>
+              <form method="POST" action="/admin/event-bookings/<%=b._id%>/status" style="display:flex;gap:6px;align-items:center">
+                <select name="status" class="filter-select" style="font-size:11px;padding:5px 28px 5px 8px" onchange="this.form.submit()">
+                  <%['pending','confirmed','cancelled'].forEach(s=>{%><option value="<%=s%>" <%=b.status===s?'selected':''%>><%=s.charAt(0).toUpperCase()+s.slice(1)%></option><%})%>
+                </select>
+              </form>
+            </td>
+            <td style="font-size:11px;color:#999"><%=moment(b.createdAt).format('DD MMM, hh:mm A')%></td>
+            <td style="display:flex;gap:6px">
+              <a href="tel:<%=b.phone%>" class="btn-adm btn-adm-outline btn-adm-sm" title="Call"><i class="fas fa-phone-alt"></i></a>
+              <a href="mailto:<%=b.email%>?subject=Re: <%=b.eventName%> Booking <%=b.eventBookingId%>" class="btn-adm btn-adm-outline btn-adm-sm" title="Email"><i class="fas fa-envelope"></i></a>
+              <a href="https://wa.me/<%=b.phone.replace(/\D/g,'')%>" target="_blank" class="btn-adm btn-adm-outline btn-adm-sm" title="WhatsApp" style="color:green"><i class="fab fa-whatsapp"></i></a>
+              <button class="btn-adm btn-adm-danger btn-adm-sm delete-btn" data-url="/admin/event-bookings/<%=b._id%>"><i class="fas fa-trash"></i></button>
+            </td>
+          </tr>
+          <%if(b.message){%>
+          <tr style="background:#fafafa">
+            <td colspan="8" style="font-size:12px;color:#666;padding:8px 20px;font-style:italic">
+              <i class="fas fa-comment" style="color:#aaa;margin-right:6px"></i><%=b.message%>
+            </td>
+          </tr>
+          <%}%>
+          <%})%>
+          </tbody>
+        </table>
+      </div>
+
+      <% if(bookings.filter(b=>b.status==='pending').length > 0) { %>
+      <div style="margin-top:20px;padding:16px 20px;background:#fff3cd;border:1px solid #ffc107;border-radius:10px;font-size:13px;color:#856404;display:flex;align-items:center;gap:10px">
+        <i class="fas fa-clock" style="font-size:16px"></i>
+        <div><strong><%=bookings.filter(b=>b.status==='pending').length%> pending event enquiries</strong> need your review. Change status to "Confirmed" to notify the client.</div>
+      </div>
+      <% } %>
+    </div>
+  </main>
+</div>
+<script>
+document.querySelectorAll('.delete-btn').forEach(btn=>{
+  btn.addEventListener('click',async()=>{
+    if(!confirm('Delete this event booking?'))return;
+    const r=await fetch(btn.dataset.url,{method:'DELETE'});
+    const d=await r.json();
+    if(d.success)btn.closest('tr').remove();
+  });
+});
+</script>
+</body></html>

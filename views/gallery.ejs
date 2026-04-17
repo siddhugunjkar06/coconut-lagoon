@@ -1,0 +1,37 @@
+<%- include('partials/head', { title: 'Gallery' }) %>
+<%- include('partials/navbar') %>
+<div class="page-hero" style="padding-top:72px">
+  <div class="page-hero-bg" style="background-image:url('https://images.trvl-media.com/lodging/120000000/119770000/119762000/119761966/d59ceade.jpg')"></div>
+  <div class="page-hero-overlay"></div>
+  <div class="page-hero-content"><div class="page-hero-label">Visual Tour</div><h1 class="page-hero-title">Photo <em>Gallery</em></h1></div>
+</div>
+<section class="section gallery-section">
+  <div class="container">
+    <div class="gallery-filter">
+      <button class="gallery-btn <%= currentCategory === 'all' ? 'active' : '' %>" data-category="all" onclick="location.href='/gallery'">All</button>
+      <% ['resort','rooms','dining','activities','events','nature'].forEach(cat => { %>
+      <button class="gallery-btn <%= currentCategory === cat ? 'active' : '' %>" data-category="<%= cat %>" onclick="location.href='/gallery?category=<%= cat %>'"><%= cat.charAt(0).toUpperCase() + cat.slice(1) %></button>
+      <% }) %>
+    </div>
+    <div class="gallery-grid">
+      <% const defaultImgs = [
+        'https://images.trvl-media.com/lodging/120000000/119770000/119762000/119761966/0af54401.jpg',
+        'https://images.trvl-media.com/lodging/120000000/119770000/119762000/119761966/e7aae43a.jpg',
+        'https://images.trvl-media.com/lodging/120000000/119770000/119762000/119761966/d59ceade.jpg',
+      ];
+      const items = gallery && gallery.length > 0 ? gallery : defaultImgs.map((u,i) => ({ image: { url: u }, category: ['resort','rooms','dining'][i] }));
+      items.forEach((item, i) => { %>
+      <div class="gallery-item reveal" data-category="<%= item.category || 'resort' %>">
+        <div class="gallery-item-img" style="background-image:url('<%= item.image ? item.image.url : item %>')"></div>
+        <div class="gallery-item-overlay"><i class="fas fa-expand gallery-overlay-icon"></i></div>
+      </div>
+      <% }) %>
+    </div>
+  </div>
+</section>
+<div class="lightbox" id="lightbox">
+  <div class="lightbox-close"><i class="fas fa-times"></i></div>
+  <img class="lightbox-img" id="lightboxImg" src="" alt="">
+</div>
+<a href="https://wa.me/917775947728" target="_blank" class="whatsapp-float"><i class="fab fa-whatsapp"></i></a>
+<%- include('partials/footer') %>

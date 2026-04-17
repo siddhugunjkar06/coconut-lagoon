@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Booking Detail — Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+<div class="admin-layout">
+  <%- include('../partials/admin-sidebar', { page: page, admin: admin }) %>
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <div><div class="topbar-title">Booking: <%= booking.bookingId %></div><div class="topbar-breadcrumb"><a href="/admin/bookings">Bookings</a> · Details</div></div>
+      <div class="topbar-actions">
+        <a href="/admin/bookings" class="topbar-btn topbar-btn-outline"><i class="fas fa-arrow-left"></i> Back</a>
+      </div>
+    </div>
+    <div class="admin-content" style="max-width:900px">
+      <% if(success_msg && success_msg.length > 0) { %><div class="adm-alert adm-alert-success"><i class="fas fa-check-circle"></i> <%= success_msg %></div><% } %>
+      <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:24px">
+        <div class="data-card" style="padding:32px">
+          <h3 style="font-size:16px;margin-bottom:24px">Booking Information</h3>
+          <div style="display:grid;gap:16px;font-size:13px">
+            <div style="display:flex;justify-content:space-between;padding-bottom:12px;border-bottom:1px solid var(--adm-line)">
+              <span style="color:var(--adm-ink2)">Booking ID</span>
+              <span style="font-family:monospace;font-weight:500"><%= booking.bookingId %></span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding-bottom:12px;border-bottom:1px solid var(--adm-line)">
+              <span style="color:var(--adm-ink2)">Guest Name</span><span style="font-weight:500"><%= booking.name %></span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding-bottom:12px;border-bottom:1px solid var(--adm-line)">
+              <span style="color:var(--adm-ink2)">Phone</span><a href="tel:<%= booking.phone %>" style="color:var(--adm-accent)"><%= booking.phone %></a>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding-bottom:12px;border-bottom:1px solid var(--adm-line)">
+              <span style="color:var(--adm-ink2)">Email</span><a href="mailto:<%= booking.email %>" style="color:var(--adm-accent)"><%= booking.email %></a>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding-bottom:12px;border-bottom:1px solid var(--adm-line)">
+              <span style="color:var(--adm-ink2)">Room Type</span><span style="font-weight:500"><%= booking.roomType %></span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding-bottom:12px;border-bottom:1px solid var(--adm-line)">
+              <span style="color:var(--adm-ink2)">Check-in</span><span><%= moment(booking.checkIn).format('DD MMMM YYYY') %></span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding-bottom:12px;border-bottom:1px solid var(--adm-line)">
+              <span style="color:var(--adm-ink2)">Check-out</span><span><%= moment(booking.checkOut).format('DD MMMM YYYY') %></span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding-bottom:12px;border-bottom:1px solid var(--adm-line)">
+              <span style="color:var(--adm-ink2)">Duration</span><span><%= Math.ceil((new Date(booking.checkOut) - new Date(booking.checkIn)) / 86400000) %> Night(s)</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding-bottom:12px;border-bottom:1px solid var(--adm-line)">
+              <span style="color:var(--adm-ink2)">Guests</span><span><%= booking.guests %></span>
+            </div>
+            <% if(booking.totalAmount) { %>
+            <div style="display:flex;justify-content:space-between;padding-bottom:12px;border-bottom:1px solid var(--adm-line)">
+              <span style="color:var(--adm-ink2)">Est. Amount</span><span style="font-weight:600;color:var(--adm-accent)">₹<%= booking.totalAmount.toLocaleString('en-IN') %></span>
+            </div>
+            <% } %>
+            <% if(booking.specialRequests) { %>
+            <div>
+              <div style="color:var(--adm-ink2);margin-bottom:6px">Special Requests</div>
+              <div style="background:var(--adm-bg);padding:12px;border-radius:8px"><%= booking.specialRequests %></div>
+            </div>
+            <% } %>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:24px">
+          <div class="data-card" style="padding:24px">
+            <h3 style="font-size:15px;margin-bottom:20px">Update Status</h3>
+            <form method="POST" action="/admin/bookings/<%= booking._id %>/status">
+              <div class="adm-form-group" style="margin-bottom:16px">
+                <label class="adm-label">Status</label>
+                <select class="adm-input" name="status">
+                  <% ['pending','confirmed','cancelled','completed'].forEach(s => { %>
+                  <option value="<%= s %>" <%= booking.status === s ? 'selected' : '' %>><%= s.charAt(0).toUpperCase() + s.slice(1) %></option>
+                  <% }) %>
+                </select>
+              </div>
+              <div class="adm-form-group" style="margin-bottom:16px">
+                <label class="adm-label">Admin Notes</label>
+                <textarea class="adm-input" name="notes" rows="3" placeholder="Internal notes..."><%= booking.notes || '' %></textarea>
+              </div>
+              <button type="submit" class="btn-adm btn-adm-primary" style="width:100%"><i class="fas fa-save"></i> Update Booking</button>
+            </form>
+          </div>
+          <div class="data-card" style="padding:24px">
+            <h3 style="font-size:14px;margin-bottom:16px;color:var(--adm-ink2)">Quick Actions</h3>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <a href="tel:<%= booking.phone %>" class="btn-adm btn-adm-outline" style="justify-content:center"><i class="fas fa-phone-alt"></i> Call Guest</a>
+              <a href="mailto:<%= booking.email %>" class="btn-adm btn-adm-outline" style="justify-content:center"><i class="fas fa-envelope"></i> Email Guest</a>
+              <a href="https://wa.me/<%= booking.phone.replace(/\D/g,'') %>" target="_blank" class="btn-adm btn-adm-outline" style="justify-content:center;color:green"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+            </div>
+          </div>
+          <div style="font-size:11px;color:var(--adm-ink2);background:white;padding:16px;border-radius:12px">
+            <div>Created: <%= moment(booking.createdAt).format('DD MMM YYYY, hh:mm A') %></div>
+            <div style="margin-top:4px">Updated: <%= moment(booking.updatedAt).format('DD MMM YYYY, hh:mm A') %></div>
+            <div style="margin-top:4px">Source: <%= booking.source %></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+</body>
+</html>

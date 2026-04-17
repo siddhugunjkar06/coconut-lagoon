@@ -1,0 +1,37 @@
+<%- include('partials/head', { title: 'Booking Status' }) %>
+<%- include('partials/navbar') %>
+<section class="section" style="padding-top:140px;background:var(--bg);min-height:80vh">
+  <div class="container" style="max-width:600px">
+    <div class="booking-form">
+      <h2 style="font-family:'Cormorant Garamond',serif;font-size:36px;margin-bottom:8px">Check Booking Status</h2>
+      <p style="font-size:14px;color:var(--ink3);margin-bottom:32px">Enter your booking ID (e.g. CLR-ABC123XY)</p>
+      <form method="POST" action="/booking/status">
+        <div class="form-group" style="margin-bottom:20px">
+          <label class="form-label">Booking ID</label>
+          <input class="form-input" type="text" name="bookingId" placeholder="CLR-XXXXXXXX" required style="text-transform:uppercase;font-size:16px;font-weight:500">
+        </div>
+        <button type="submit" class="form-submit">Check Status</button>
+      </form>
+      <% if(error) { %><div class="form-alert error" style="margin-top:20px"><i class="fas fa-exclamation-circle"></i> <%= error %></div><% } %>
+      <% if(booking) { %>
+      <div style="margin-top:32px;padding:24px;background:var(--bg);border-radius:12px;border:1px solid var(--line)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+          <div style="font-family:'Cormorant Garamond',serif;font-size:22px"><%= booking.bookingId %></div>
+          <span class="status-badge status-<%= booking.status %>"><%= booking.status.charAt(0).toUpperCase() + booking.status.slice(1) %></span>
+        </div>
+        <div style="display:grid;gap:12px;font-size:13px;color:var(--ink2)">
+          <div><strong>Name:</strong> <%= booking.name %></div>
+          <div><strong>Room:</strong> <%= booking.roomType %></div>
+          <div><strong>Check-in:</strong> <%= new Date(booking.checkIn).toLocaleDateString('en-IN', {day:'numeric',month:'long',year:'numeric'}) %></div>
+          <div><strong>Check-out:</strong> <%= new Date(booking.checkOut).toLocaleDateString('en-IN', {day:'numeric',month:'long',year:'numeric'}) %></div>
+          <% if(booking.totalAmount) { %><div><strong>Est. Amount:</strong> ₹<%= booking.totalAmount.toLocaleString('en-IN') %></div><% } %>
+        </div>
+        <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--line);font-size:12px;color:var(--ink3)">
+          For changes: <a href="tel:+917775947728" style="color:var(--accent)">+91 77759 47728</a>
+        </div>
+      </div>
+      <% } %>
+    </div>
+  </div>
+</section>
+<%- include('partials/footer') %>

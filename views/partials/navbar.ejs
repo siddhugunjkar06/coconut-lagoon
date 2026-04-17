@@ -1,0 +1,45 @@
+<nav id="mainNav">
+  <div class="nav-container">
+    <a href="/" class="nav-logo">
+      <div class="nav-logo-icon"><i class="fas fa-leaf"></i></div>
+      <div class="nav-logo-text">
+        <span class="logo-main">Coconut Lagoon</span>
+        <span class="logo-sub">Agro Resort · Parbhani</span>
+      </div>
+    </a>
+
+    <div class="nav-links" id="navLinks">
+      <a href="/" class="nav-link <%= page === 'home' ? 'active' : '' %>">Home</a>
+      <a href="/about" class="nav-link <%= page === 'about' ? 'active' : '' %>">About</a>
+      <a href="/rooms" class="nav-link <%= page === 'rooms' ? 'active' : '' %>">Rooms</a>
+      <a href="/dining" class="nav-link <%= page === 'dining' ? 'active' : '' %>">Dining</a>
+      <a href="/activities" class="nav-link <%= page === 'activities' ? 'active' : '' %>">Activities</a>
+      <a href="/gallery" class="nav-link <%= page === 'gallery' ? 'active' : '' %>">Gallery</a>
+      <a href="/events" class="nav-link <%= page === 'events' ? 'active' : '' %>">Events</a>
+      <a href="/contact" class="nav-link <%= page === 'contact' ? 'active' : '' %>">Contact</a>
+    </div>
+
+    <div class="nav-actions">
+      <a href="tel:+917775947728" class="nav-phone"><i class="fas fa-phone-alt"></i> +91 77759 47728</a>
+      <a href="/booking" class="nav-book-btn">Book Now <i class="fas fa-arrow-right"></i></a>
+      <button class="nav-hamburger" id="navHamburger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<style>
+/* Hero page: navbar starts fully transparent, text white */
+body:has(.hero-bg-full) #mainNav:not(.scrolled) .logo-main,
+body:has(.hero-bg-full) #mainNav:not(.scrolled) .logo-sub,
+body:has(.hero-bg-full) #mainNav:not(.scrolled) .nav-link,
+body:has(.hero-bg-full) #mainNav:not(.scrolled) .nav-phone { color: rgba(255,255,255,0.85); }
+body:has(.hero-bg-full) #mainNav:not(.scrolled) .nav-link:hover { color: white; }
+body:has(.hero-bg-full) #mainNav:not(.scrolled) .nav-link.active { color: white; }
+body:has(.hero-bg-full) #mainNav:not(.scrolled) .nav-link::after { background: white; }
+body:has(.hero-bg-full) #mainNav:not(.scrolled) .nav-book-btn { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); backdrop-filter: blur(10px); box-shadow: none; }
+body:has(.hero-bg-full) #mainNav:not(.scrolled) .nav-book-btn:hover { background: var(--gold); border-color: var(--gold); }
+body:has(.hero-bg-full) #mainNav:not(.scrolled) .nav-hamburger span { background: white; }
+body:has(.hero-bg-full) #mainNav:not(.scrolled) .nav-logo-icon { box-shadow: none; }
+</style>

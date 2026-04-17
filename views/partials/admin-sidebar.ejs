@@ -1,0 +1,36 @@
+<aside class="admin-sidebar">
+  <div class="sidebar-brand">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-icon"><i class="fas fa-leaf"></i></div>
+      <div>
+        <div class="sidebar-logo-name">Coconut Lagoon</div>
+        <div class="sidebar-logo-sub">Resort Admin</div>
+      </div>
+    </div>
+    <div class="sidebar-admin-badge"><i class="fas fa-user-shield"></i> <%= admin ? admin.name : 'Admin' %></div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="sidebar-section-label">Overview</div>
+    <a href="/admin/dashboard"     class="sidebar-link <%= page==='dashboard'?'active':'' %>"><i class="fas fa-chart-pie"></i> Dashboard</a>
+
+    <div class="sidebar-section-label">Reservations</div>
+    <a href="/admin/bookings"      class="sidebar-link <%= page==='bookings'?'active':'' %>"><i class="fas fa-calendar-alt"></i> Room Bookings</a>
+    <a href="/admin/event-bookings" class="sidebar-link <%= page==='events'&&typeof evtBooks!=='undefined'?'active':'' %>"><i class="fas fa-calendar-check"></i> Event Bookings</a>
+
+    <div class="sidebar-section-label">Content</div>
+    <a href="/admin/rooms"         class="sidebar-link <%= page==='rooms'?'active':'' %>"><i class="fas fa-door-open"></i> Rooms</a>
+    <a href="/admin/dining"        class="sidebar-link <%= page==='dining'?'active':'' %>"><i class="fas fa-utensils"></i> Dining Menu</a>
+    <a href="/admin/activities"    class="sidebar-link <%= page==='activities'?'active':'' %>"><i class="fas fa-hiking"></i> Activities</a>
+    <a href="/admin/events"        class="sidebar-link <%= page==='events'&&typeof evtBooks==='undefined'?'active':'' %>"><i class="fas fa-calendar-star"></i> Event Packages</a>
+    <a href="/admin/gallery"       class="sidebar-link <%= page==='gallery'?'active':'' %>"><i class="fas fa-images"></i> Gallery</a>
+    <a href="/admin/reviews"       class="sidebar-link <%= page==='reviews'?'active':'' %>"><i class="fas fa-star"></i> Reviews</a>
+
+    <div class="sidebar-section-label">Communication</div>
+    <a href="/admin/contacts"      class="sidebar-link <%= page==='contacts'?'active':'' %>"><i class="fas fa-envelope"></i> Messages</a>
+
+    <div class="sidebar-section-label">Account</div>
+    <a href="/admin/settings"      class="sidebar-link <%= page==='settings'?'active':'' %>"><i class="fas fa-cog"></i> Settings</a>
+    <a href="/"  target="_blank"   class="sidebar-link"><i class="fas fa-external-link-alt"></i> View Website</a>
+    <a href="/admin/logout"        class="sidebar-link" style="color:rgba(220,53,69,0.7);margin-top:4px"><i class="fas fa-sign-out-alt"></i> Logout</a>
+  </nav>
+</aside>

@@ -1,0 +1,68 @@
+<%- include('partials/head', { title: 'Book Your Stay' }) %>
+<%- include('partials/navbar') %>
+
+<div class="page-hero" style="padding-top:72px">
+  <div class="page-hero-bg" style="background-image:url('https://images.trvl-media.com/lodging/120000000/119770000/119762000/119761966/0af54401.jpg')"></div>
+  <div class="page-hero-overlay"></div>
+  <div class="page-hero-content">
+    <div class="page-hero-label">Reservations</div>
+    <h1 class="page-hero-title">Book Your <em>Stay</em></h1>
+  </div>
+</div>
+
+<section class="section" style="background:var(--bg)">
+  <div class="container" style="max-width:900px">
+    <% if(success) { %>
+    <div class="form-alert success" style="font-size:15px;padding:20px 24px;margin-bottom:36px"><i class="fas fa-check-circle"></i> <%- success %></div>
+    <% } %>
+    <% if(error) { %>
+    <div class="form-alert error" style="font-size:15px;padding:20px 24px;margin-bottom:36px"><i class="fas fa-exclamation-circle"></i> <%= error %></div>
+    <% } %>
+    <div class="booking-form">
+      <div style="margin-bottom:36px">
+        <h2 style="font-family:'Cormorant Garamond',serif;font-size:36px;color:var(--ink);margin-bottom:8px">Reserve Your Room</h2>
+        <p style="font-size:14px;color:var(--ink3)">No advance payment required. We'll confirm within 2 hours by phone.</p>
+      </div>
+      <form method="POST" action="/booking">
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Full Name *</label><input class="form-input" type="text" name="name" value="<%= prefill && prefill.name || '' %>" placeholder="Your full name" required></div>
+          <div class="form-group"><label class="form-label">Phone *</label><input class="form-input" type="tel" name="phone" placeholder="+91 00000 00000" required></div>
+          <div class="form-group"><label class="form-label">Email *</label><input class="form-input" type="email" name="email" placeholder="your@email.com" required></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Check-in *</label><input class="form-input" type="date" name="checkIn" id="checkIn" value="<%= prefill && prefill.checkIn || '' %>" required></div>
+          <div class="form-group"><label class="form-label">Check-out *</label><input class="form-input" type="date" name="checkOut" id="checkOut" value="<%= prefill && prefill.checkOut || '' %>" required></div>
+          <div class="form-group"><label class="form-label">Guests</label><select class="form-input" name="guests"><option value="1">1 Guest</option><option value="2" selected>2 Guests</option><option value="3">3 Guests</option><option value="4">4 Guests</option><option value="5">5+ Guests</option></select></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group span-2">
+            <label class="form-label">Room Type *</label>
+            <select class="form-input" name="roomType" id="roomSelect" required>
+              <option value="">Select a room</option>
+              <% rooms.forEach(r => { %><option value="<%= r._id %>" data-price="<%= r.price %>" <%= prefill && prefill.roomId == r._id ? 'selected' : '' %>><%= r.name %> — ₹<%= r.price.toLocaleString('en-IN') %>/night</option><% }) %>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Est. Total</label>
+            <input class="form-input" id="priceLine" readonly placeholder="—" style="background:var(--card);font-weight:500;color:var(--accent)">
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom:24px">
+          <label class="form-label">Special Requests</label>
+          <textarea class="form-input" name="specialRequests" rows="3" placeholder="Dietary requirements, room preferences, celebrations..."></textarea>
+        </div>
+        <button type="submit" class="form-submit"><i class="fas fa-calendar-check"></i> Confirm Reservation — No Payment Required</button>
+      </form>
+      <div style="text-align:center;margin-top:24px;font-size:12px;color:var(--ink3);display:flex;gap:24px;justify-content:center;flex-wrap:wrap">
+        <span><i class="fas fa-lock" style="color:var(--accent)"></i> Secure & Safe</span>
+        <span><i class="fas fa-phone-alt" style="color:var(--accent)"></i> Confirmation call within 2 hours</span>
+        <span><i class="fas fa-times-circle" style="color:var(--accent)"></i> Free cancellation</span>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:24px">
+      <a href="/booking/status" style="font-size:13px;color:var(--ink3)"><i class="fas fa-search"></i> Check existing booking status</a>
+    </div>
+  </div>
+</section>
+<a href="https://wa.me/917775947728" target="_blank" class="whatsapp-float"><i class="fab fa-whatsapp"></i></a>
+<%- include('partials/footer') %>
