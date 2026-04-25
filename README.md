@@ -2,48 +2,6 @@
 
 Production-ready resort website with **online payments**, **event booking**, and full admin control over Dining, Activities & Events.
 
-## 🚀 Quick Start
-
-```bash
-npm install
-cp .env.example .env   # fill in your credentials
-npm start              # → http://localhost:3000
-```
-
-**First-run auto-seeds:** Admin account · 3 Rooms · 4 Events · 6 Activities · 7 Dining items
-
-**Admin login:** `admin@coconutlagoon.com` / `Admin@2024`
-
----
-
-## ⚙️ Environment Variables
-
-```env
-PORT=3000
-MONGODB_URI=mongodb://localhost:27017/coconut-lagoon
-SESSION_SECRET=your-secret-key
-
-# Cloudinary (image uploads)
-CLOUDINARY_CLOUD_NAME=your_cloud_name
-CLOUDINARY_API_KEY=your_api_key
-CLOUDINARY_API_SECRET=your_api_secret
-
-# Razorpay (online payments)
-RAZORPAY_KEY_ID=rzp_test_xxxxxxxxxxxxxx
-RAZORPAY_KEY_SECRET=xxxxxxxxxxxxxxxxxxxxxxxx
-
-# Admin
-ADMIN_EMAIL=admin@coconutlagoon.com
-ADMIN_PASSWORD=Admin@2024
-
-# Email confirmations (optional)
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_USER=your@gmail.com
-SMTP_PASS=your_app_password
-```
-
----
 
 ## 🌐 Public Website
 
@@ -141,36 +99,5 @@ coconut-lagoon/
 
 ---
 
-## 🚀 Deployment
-
-### Render.com (recommended free tier)
-1. Push to GitHub
-2. New Web Service on Render → connect repo
-3. Add all env vars
-4. Deploy
-
-### Railway
-```bash
-npm install -g @railway/cli
-railway login && railway init && railway up
-```
-
-### PM2 (VPS)
-```bash
-npm install -g pm2
-pm2 start app.js --name coconut-lagoon
-pm2 save && pm2 startup
-```
-
----
-
-## 💡 Razorpay Setup
-
-1. Create account at [razorpay.com](https://razorpay.com)
-2. Go to Settings → API Keys → Generate Key
-3. Copy `Key ID` and `Key Secret` to `.env`
-4. For production: complete KYC and switch to live keys (`rzp_live_...`)
-
----
 
 *Built for Coconut Lagoon Agro Resort, Parbhani, Maharashtra*
